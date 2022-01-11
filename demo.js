@@ -24,6 +24,7 @@
       <p><label>Min Price: <input type="text" id="minPrice77"/></label></p>
       <p><label>Warning Offset: <input type="text" id="warningOffset77"/></label></p>
       <p style="margin-top: 20px; text-align: center;"><button style="font-size: 14px; padding: 7px 14px;" id="toggleWarning77">开始监听</button></p>
+      <p style="margin-top: 20px; text-align: center;" id="priceMessage"></p>
       <iframe style="width:0;height:0;" id="iframeWindow" src="https://himalaya.exchange"/>
     </div>
   `
@@ -37,6 +38,7 @@
   const minPrice77 = document.getElementById('minPrice77');
   const warningOffset77 = document.getElementById('warningOffset77');
   const toggleWarning77 = document.getElementById('toggleWarning77');
+  
   const seconds = 3
   toggleWarning77.addEventListener('click', () => {
     const text = toggleWarning77.innerText
@@ -64,16 +66,18 @@
     }
   })
 
-  function sendPriceNotification(msg) {
+  function sendPriceNotification(msg='已经开启消息通知！') {
+    const priceMessage = document.getElementById('priceMessage');
     const iframeWindow = document.getElementById('iframeWindow');
     const win = iframeWindow.contentWindow || iframeWindow
     if (win.Notification.requestPermission) {
       win.Notification.requestPermission(function(status) {
         console.log(status); // 仅当值为 "granted" 时显示通知
-        var n = new win.Notification("消息", {body: msg || "已经开启消息通知！"}); // 显示通知
+        var n = new win.Notification("消息", {body: msg}); // 显示通知
       });
     } else if (msg){
       alert(msg)
     }
+    priceMessage.innerText = msg
   };
 })();
