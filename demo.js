@@ -27,6 +27,13 @@
   `
   document.body.appendChild(panel.children[0]);
 
+  function sendNotification(msg) {
+    Notification.requestPermission(function(status) {
+      console.log(status); // 仅当值为 "granted" 时显示通知
+      var n = new Notification("消息", {body: msg || "已经开启消息通知！"}); // 显示通知
+    });
+  };
+
   sendNotification();
 
   // 每秒检测价格
@@ -46,11 +53,4 @@
       sendNotification('价格 接近 小值！')
     }
   }, 1000);
-
-  function sendNotification(msg) {
-    Notification.requestPermission( function(status) {
-      console.log(status); // 仅当值为 "granted" 时显示通知
-      var n = new Notification("消息", {body: msg || "已经开启消息通知！"}); // 显示通知
-    });
-  };
-})()
+})();
