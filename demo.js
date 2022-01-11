@@ -1,4 +1,4 @@
-window.onload = () => {
+(function(){
   const priceDom = document.getElementById('_spanLastPrice');
   if (!priceDom) return
   priceDom.style.position = 'fixed'
@@ -21,4 +21,4 @@ window.onload = () => {
     />
   `
   document.body.appendChild(panel.children[0]);
-}
+})()
