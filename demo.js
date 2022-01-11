@@ -27,14 +27,14 @@
   `
   document.body.appendChild(panel.children[0]);
 
-  function sendNotification(msg) {
-    Notification.requestPermission(function(status) {
-      console.log(status); // 仅当值为 "granted" 时显示通知
-      var n = new Notification("消息", {body: msg || "已经开启消息通知！"}); // 显示通知
-    });
+  function sendPriceNotification(msg) {
+    // Notification.requestPermission(function(status) {
+    //   console.log(status); // 仅当值为 "granted" 时显示通知
+    //   var n = new Notification("消息", {body: msg || "已经开启消息通知！"}); // 显示通知
+    // });
   };
 
-  sendNotification();
+  sendPriceNotification();
 
   // 每秒检测价格
   setInterval(() => {
@@ -44,13 +44,13 @@
     const warningOffset = Number(document.getElementById('warningOffset77').value || 0.005)
 
     if (lastPrice > maxPrice) {
-      sendNotification('价格 超出 大值！')
+      sendPriceNotification('价格 超出 大值！')
     } else if (lastPrice < minPrice) {
-      sendNotification('价格 低于 小值！')
+      sendPriceNotification('价格 低于 小值！')
     } else if (lastPrice >= maxPrice - warningOffset) {
-      sendNotification('价格 接近 大值！')
+      sendPriceNotification('价格 接近 大值！')
     } else if (lastPrice <= minPrice + warningOffset) {
-      sendNotification('价格 接近 小值！')
+      sendPriceNotification('价格 接近 小值！')
     }
   }, 1000);
 })();
