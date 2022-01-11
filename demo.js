@@ -30,7 +30,7 @@
   `
   document.body.appendChild(panel.children[0]);
 
-  sendPriceNotification();
+  sendPriceNotification('消息通知已经开启！');
 
   // 设置监听事件
   let inter
@@ -57,6 +57,8 @@
           sendPriceNotification('价格 接近 大值！')
         } else if (lastPrice <= minPrice + warningOffset) {
           sendPriceNotification('价格 接近 小值！')
+        } else {
+          sendPriceNotification()
         }
       }, seconds * 1000);
       toggleWarning77.innerText = '停止监听'
@@ -64,19 +66,18 @@
       clearInterval(inter)
       toggleWarning77.innerText = '开始监听'
     }
+    priceMessage.innerText = ''
   })
 
-  function sendPriceNotification(msg='已经开启消息通知！') {
+  function sendPriceNotification(msg='') {
     const priceMessage = document.getElementById('priceMessage');
     const iframeWindow = document.getElementById('iframeWindow');
     const win = iframeWindow.contentWindow || iframeWindow
-    if (win.Notification && win.Notification.requestPermission) {
+    if (msg && win.Notification && win.Notification.requestPermission) {
       win.Notification.requestPermission(function(status) {
         console.log(status); // 仅当值为 "granted" 时显示通知
         var n = new win.Notification("消息", {body: msg}); // 显示通知
       });
-    } else if (msg){
-      alert(msg)
     }
     priceMessage.innerText = msg
   };
