@@ -23,7 +23,7 @@
       <p><label>Max Price: <input type="text" id="maxPrice77"/></label></p>
       <p><label>Min Price: <input type="text" id="minPrice77"/></label></p>
       <p><label>Warning Offset: <input type="text" id="warningOffset77"/></label></p>
-      <p style="margin-top: 20px; text-align: center;"><button id="toggleWarning77">开始监听</button></p>
+      <p style="margin-top: 20px; text-align: center;"><button style="font-size: 14px; padding: 7px 14px;" id="toggleWarning77">开始监听</button></p>
     </div>
   `
   document.body.appendChild(panel.children[0]);
