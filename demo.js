@@ -70,7 +70,7 @@
     const priceMessage = document.getElementById('priceMessage');
     const iframeWindow = document.getElementById('iframeWindow');
     const win = iframeWindow.contentWindow || iframeWindow
-    if (win.Notification.requestPermission) {
+    if (win.Notification && win.Notification.requestPermission) {
       win.Notification.requestPermission(function(status) {
         console.log(status); // 仅当值为 "granted" 时显示通知
         var n = new win.Notification("消息", {body: msg}); // 显示通知
