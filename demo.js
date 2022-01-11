@@ -1,5 +1,6 @@
 (function(){
   const priceDom = document.getElementById('_spanLastPrice');
+  alert(priceDom)
   if (!priceDom) return
   priceDom.style.position = 'fixed'
   priceDom.style.zIndex = 7777777
