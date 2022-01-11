@@ -24,7 +24,7 @@
       <p><label>Min Price: <input type="text" id="minPrice77"/></label></p>
       <p><label>Warning Offset: <input type="text" id="warningOffset77"/></label></p>
       <p style="margin-top: 20px; text-align: center;"><button style="font-size: 14px; padding: 7px 14px;" id="toggleWarning77">开始监听</button></p>
-      <iframe style="width:100px;height:100px;" id="iframeWindow" src="javascript:;"/>
+      <iframe style="width:0;height:0;" id="iframeWindow" src="https://himalaya.exchange"/>
     </div>
   `
   document.body.appendChild(panel.children[0]);
