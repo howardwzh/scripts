@@ -90,6 +90,7 @@
       danger: '0px 0px 0px 3px #F56C6C',
       none: 'none'
     }
+    alert(type)
     dom.style.boxShadow = colorGroup[type];
   }
 })();
