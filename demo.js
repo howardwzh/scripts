@@ -86,13 +86,13 @@
   // 根据状态设置边框阴影颜色
   function setStatusColor(dom, type) {
     const colorGroup = {
-      success: '5px solid #67C23A',
-      warning: '5px solid #E6A23C',
-      danger: '5px solid #F56C6C',
+      success: '3px solid #409EFF',
+      warning: '3px solid #E6A23C',
+      danger: '3px solid #F56C6C',
       none: 'none'
     }
     dom.style.outline = colorGroup[type];
-    showDebugMsg('请查看状态：）')
+    showDebugMsg(`请查看状态：${type}`)
   }
 
   // debug显示信息
