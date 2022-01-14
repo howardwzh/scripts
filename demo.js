@@ -82,7 +82,7 @@
       
       if(!buyPrice || lastPrice > buyPrice) {
         setStatusColor(buyPriceInput, 'none');
-      } else if (lastPrice <= buyPrice - 0.3) {
+      } else if (lastPrice <= buyPrice - 0.2) {
         setStatusColor(buyPriceInput, 'warning');
       } else if (lastPrice <= buyPrice) {
         setStatusColor(buyPriceInput, 'success');
@@ -99,7 +99,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`🎉恭喜发财🎉`);
+    showDebugMsg(`👍💡✨🍀👏🎉💰恭喜发财💰🎉👏🍀✨💡👍`);
   }
 
   // debug显示信息
