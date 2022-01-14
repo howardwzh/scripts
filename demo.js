@@ -25,6 +25,7 @@
       >
         <p><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
         <p><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
+        <p style="text-align: center" id="debugMsg"></p>
       </div>
     `
     document.body.appendChild(panel.children[0]);
@@ -91,5 +92,11 @@
       none: 'none'
     }
     dom.style.boxShadow = colorGroup[type];
+    showDebugMsg(dom.style.boxShadow)
+  }
+
+  // debug显示信息
+  function showDebugMsg(msg) {
+    document.getElementById(debugMsg).innerText = msg
   }
 })();
