@@ -49,7 +49,7 @@
     sellPriceInput.value = localStorage.getItem('sellPriceInput');
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText)
-      const sellPrice = Number(sellPriceInput.value)
+      const sellPrice = Number(sellPriceInput.value||0)
       localStorage.setItem('sellPriceInput', sellPrice)
       
       if (!sellPrice || lastPrice < sellPrice) {
@@ -69,7 +69,7 @@
     buyPriceInput.value = localStorage.getItem('buyPriceInput');
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText)
-      const buyPrice = Number(buyPriceInput.value)
+      const buyPrice = Number(buyPriceInput.value||0)
       localStorage.setItem('buyPriceInput', buyPrice)
       
       if(!buyPrice || lastPrice > buyPrice) {
