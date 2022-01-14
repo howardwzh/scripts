@@ -86,9 +86,9 @@
   // 根据状态设置边框阴影颜色
   function setStatusColor(dom, type) {
     const colorGroup = {
-      success: '0px 0px 3px #67C23A',
-      warning: '0px 0px 3px #E6A23C',
-      danger: '0px 0px 3px #F56C6C',
+      success: '0 0 0 7px #67C23A',
+      warning: '0 0 0 7px #E6A23C',
+      danger: '0 0 0 7px #F56C6C',
       none: 'none'
     }
     showDebugMsg('showDebugMsg: '+dom.style.boxShadow)
