@@ -24,13 +24,14 @@
           z-index:777777;
           padding: 100px 27px;
           text-align: center;
+          font-size: 14px;
           "
         >
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 77px; font-size: 14px; padding: 7px 14px;">开关</button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -45,7 +46,7 @@
       left:27px;
       top:27px;
       background-color:#777;
-      padding: 7px;
+      padding: 2px 7px;
     `);
   };
 
