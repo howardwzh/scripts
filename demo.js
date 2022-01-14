@@ -32,7 +32,7 @@
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 77px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
-    `
+    `;
     document.body.appendChild(panel.children[0]);
   };
 
@@ -45,7 +45,8 @@
       left:27px;
       top:27px;
       background-color:#777;
-    `)
+      padding: 7px;
+    `);
   };
 
   // 检查卖出价格
@@ -54,16 +55,16 @@
     const sellPriceInput = document.getElementById('sellPriceInput');
     sellPriceInput.value = localStorage.getItem('sellPriceInput');
     setInterval(() => {
-      const lastPrice = Number(lastPriceDom.innerText)
-      const sellPrice = Number(sellPriceInput.value||0)
-      localStorage.setItem('sellPriceInput', sellPrice)
+      const lastPrice = Number(lastPriceDom.innerText);
+      const sellPrice = Number(sellPriceInput.value||0);
+      localStorage.setItem('sellPriceInput', sellPrice);
       
       if (!sellPrice || lastPrice < sellPrice) {
-        setStatusColor(sellPriceInput, 'none')
+        setStatusColor(sellPriceInput, 'none');
       } else if (lastPrice >= sellPrice + 0.5) {
-        setStatusColor(sellPriceInput, 'danger')
+        setStatusColor(sellPriceInput, 'danger');
       } else if (lastPrice >= sellPrice) {
-        setStatusColor(sellPriceInput, 'success')
+        setStatusColor(sellPriceInput, 'success');
       }
     }, 1000);
   };
@@ -74,56 +75,56 @@
     const buyPriceInput = document.getElementById('buyPriceInput');
     buyPriceInput.value = localStorage.getItem('buyPriceInput');
     setInterval(() => {
-      const lastPrice = Number(lastPriceDom.innerText)
-      const buyPrice = Number(buyPriceInput.value||0)
-      localStorage.setItem('buyPriceInput', buyPrice)
+      const lastPrice = Number(lastPriceDom.innerText);
+      const buyPrice = Number(buyPriceInput.value||0);
+      localStorage.setItem('buyPriceInput', buyPrice);
       
       if(!buyPrice || lastPrice > buyPrice) {
-        setStatusColor(buyPriceInput, 'none')
+        setStatusColor(buyPriceInput, 'none');
       } else if (lastPrice <= buyPrice - 0.3) {
-        setStatusColor(buyPriceInput, 'warning')
+        setStatusColor(buyPriceInput, 'warning');
       } else if (lastPrice <= buyPrice) {
-        setStatusColor(buyPriceInput, 'success')
+        setStatusColor(buyPriceInput, 'success');
       }
     }, 1000);
   };
 
   // 根据状态设置边框阴影颜色
-  function setStatusColor(dom, type) {
+  function setStatusColor(dom, status) {
     const colorGroup = {
       success: '3px solid #409EFF',
       warning: '3px solid #E6A23C',
       danger: '3px solid #F56C6C',
       none: 'none'
-    }
-    dom.style.outline = colorGroup[type];
-    showDebugMsg(`请查看状态：${type}`)
+    };
+    dom.style.outline = colorGroup[status];
+    showDebugMsg(`🎉恭喜发财🎉`);
   }
 
   // debug显示信息
   function showDebugMsg(msg) {
-    document.getElementById('debugMsg').innerText = msg
+    document.getElementById('debugMsg').innerText = msg;
   }
 
   // 加上监听事件
   function addEventsListener() {
-    let showPanel = true
+    let showPanel = true;
     document.getElementById('toggleBtn').addEventListener('click', () => {
-      showPanel = !showPanel
-      toggleShowPanel(showPanel)
-    })
+      showPanel = !showPanel;
+      toggleShowPanel(showPanel);
+    });
   }
 
   // 显示/隐藏监听面板
   function toggleShowPanel(showPanel) {
     const lastPriceDom = document.getElementById('_spanLastPrice');
-    const monitorMainPanel = document.getElementById('monitorMainPanel')
+    const monitorMainPanel = document.getElementById('monitorMainPanel');
     if (showPanel) {
-      lastPriceDom.style.position = 'fixed'
-      monitorMainPanel.style.display = 'block'
+      lastPriceDom.style.position = 'fixed';
+      monitorMainPanel.style.display = 'block';
     } else {
-      lastPriceDom.style.position = 'relative'
-      monitorMainPanel.style.display = 'none'
+      lastPriceDom.style.position = 'static';
+      monitorMainPanel.style.display = 'none';
     }
   }
 })();
