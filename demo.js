@@ -99,7 +99,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`👍💡✨🍀👏🎉💰恭喜发财💰🎉👏🍀✨💡👍`);
+    showDebugMsg(`🍀🎉💰恭喜发财💰🎉🍀`);
   }
 
   // debug显示信息
