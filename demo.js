@@ -1,12 +1,13 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
 
-  addPanel();
-  fixedDom();
-  addEventListener();
+  addMainPanel();
+  fixedLastPriceDom();
+  checkSellPrice();
+  checkBuyPrice();
 
   // 加遮罩面板
-  function addPanel() {
+  function addMainPanel() {
     const panel = document.createElement('div');
     panel.innerHTML = `
       <div style="
@@ -20,21 +21,21 @@
         padding: 100px 27px;
         "
       >
-        <p><label>Max Price: <input type="text" id="maxPrice77"/></label></p>
-        <p><label>Min Price: <input type="text" id="minPrice77"/></label></p>
+        <p><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
+        <p><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
         <p><label>Warning Offset: <input type="text" id="warningOffset77"/></label></p>
         <p style="margin-top: 20px; text-align: center;"><button style="font-size: 14px; padding: 7px 14px;" id="toggleWarning77">开始监听</button></p>
         <p style="margin-top: 20px; text-align: center;" id="priceMessage"></p>
-        <iframe style="width:0;height:0;" id="iframeWindow" src="https://himalaya.exchange"/>
+        <iframe style="width:0;height:0;" id="iframeWindow" src="https://xxxxx"/>
       </div>
     `
     document.body.appendChild(panel.children[0]);
   };
 
   // 浮动元素
-  function fixedDom() {
-    const priceDom = document.getElementById('_spanLastPrice');
-    priceDom.setAttribute('style', `
+  function fixedLastPriceDom() {
+    const lastPriceDom = document.getElementById('_spanLastPrice');
+    lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
       left:27px;
@@ -43,57 +44,54 @@
     `)
   };
 
-  // 设置监听事件
-  function addEventListener() {
-    let inter
-    const maxPrice77 = document.getElementById('maxPrice77');
-    const minPrice77 = document.getElementById('minPrice77');
-    const warningOffset77 = document.getElementById('warningOffset77');
-    const toggleWarning77 = document.getElementById('toggleWarning77');
-    const seconds = 3
-
-    sendPriceNotification('消息通知已经开启！');
-    toggleWarning77.addEventListener('click', () => {
-      const text = toggleWarning77.innerText
-      if (text === '开始监听') {
-        inter = setInterval(() => {
-          const lastPrice = Number(priceDom.innerText || 0)
-          const maxPrice = Number(maxPrice77.value || 7777777)
-          const minPrice = Number(minPrice77.value || 0)
-          const warningOffset = Number(warningOffset77.value || 0.005)
+  // 检查卖出价格
+  function checkSellPrice() {
+    const lastPriceDom = document.getElementById('_spanLastPrice');
+    const sellPriceInput = document.getElementById('sellPriceInput');
+    sellPriceInput.value = localStorage.getItem('sellPriceInput') || 0
+    setInterval(() => {
+      const lastPrice = Number(lastPriceDom.innerText)
+      const sellPrice = Number(sellPriceInput.value)
+      localStorage.getItem('sellPriceInput', sellPrice)
       
-          if (lastPrice > maxPrice) {
-            sendPriceNotification('价格 超出 大值！')
-          } else if (lastPrice < minPrice) {
-            sendPriceNotification('价格 低于 小值！')
-          } else if (lastPrice >= maxPrice - warningOffset) {
-            sendPriceNotification('价格 接近 大值！')
-          } else if (lastPrice <= minPrice + warningOffset) {
-            sendPriceNotification('价格 接近 小值！')
-          } else {
-            sendPriceNotification()
-          }
-        }, seconds * 1000);
-        toggleWarning77.innerText = '停止监听'
-      } else {
-        clearInterval(inter)
-        toggleWarning77.innerText = '开始监听'
+      if (!sellPrice || lastPrice < sellPrice) {
+        setStatusColor(sellPriceInput, 'none')
+      } else if (lastPrice >= sellPrice + 0.5) {
+        setStatusColor(sellPriceInput, 'danger')
+      } else if (lastPrice >= sellPrice) {
+        setStatusColor(sellPriceInput, 'success')
       }
-      priceMessage.innerText = ''
-    })
+    }, 1000);
   };
 
-  // 发消息
-  function sendPriceNotification(msg='') {
-    const priceMessage = document.getElementById('priceMessage');
-    const iframeWindow = document.getElementById('iframeWindow');
-    const win = iframeWindow.contentWindow || iframeWindow
-    if (msg && win.Notification && win.Notification.requestPermission) {
-      win.Notification.requestPermission(function(status) {
-        console.log(status); // 仅当值为 "granted" 时显示通知
-        var n = new win.Notification("消息", {body: msg}); // 显示通知
-      });
-    }
-    priceMessage.innerText = msg
+  // 检查买入价格
+  function checkSellPrice() {
+    const lastPriceDom = document.getElementById('_spanLastPrice');
+    const buyPriceInput = document.getElementById('buyPriceInput');
+    buyPriceInput.value = localStorage.getItem('buyPriceInput') || 0
+    setInterval(() => {
+      const lastPrice = Number(lastPriceDom.innerText)
+      const buyPrice = Number(buyPriceInput.value)
+      localStorage.getItem('buyPriceInput', buyPrice)
+      
+      if(!buyPrice || lastPrice > buyPrice) {
+        setStatusColor(buyPriceInput, 'none')
+      } else if (lastPrice <= buyPrice - 0.3) {
+        setStatusColor(buyPriceInput, 'warning')
+      } else if (lastPrice <= buyPrice) {
+        setStatusColor(buyPriceInput, 'success')
+      }
+    }, 1000);
   };
+
+  // 根据状态设置边框阴影颜色
+  function setStatusColor(dom, type) {
+    const colorGroup = {
+      success: '0px 0px 0px 3px #67C23A',
+      warning: '0px 0px 0px 3px #E6A23C',
+      danger: '0px 0px 0px 3px #F56C6C',
+      none: 'none'
+    }
+    dom.style.boxShadow = colorGroup[type];
+  }
 })();
