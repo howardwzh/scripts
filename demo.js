@@ -13,28 +13,27 @@
   function addMainPanel() {
     const panel = document.createElement('div');
     panel.innerHTML = `
-      <div id="monitorMainPanel" style="
-        position: fixed; 
-        top: 0; 
-        bottom: 0; 
-        left: 0; 
-        right:0;  
-        background-color: #fff; 
-        z-index:777777;
-        padding: 100px 27px;
-        text-align: center;
-        "
-      >
-        <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
-        <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
-        <p id="debugMsg"></p>
+      <div>
+        <div id="monitorMainPanel" style="
+          position: fixed; 
+          top: 0; 
+          bottom: 0; 
+          left: 0; 
+          right:0;  
+          background-color: #fff; 
+          z-index:777777;
+          padding: 100px 27px;
+          text-align: center;
+          "
+        >
+          <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
+          <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
+          <p id="debugMsg"></p>
+        </div>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 77px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
-      <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 77px; font-size: 14px; padding: 7px 14px;">开关</button>
     `
-    showDebugMsg(panel.children.length)
     document.body.appendChild(panel.children[0]);
-    document.body.appendChild(panel.children[1]);
-
   };
 
   // 浮动元素
