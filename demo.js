@@ -6,7 +6,7 @@
   setTimeout(() => {
     checkSellPrice();
     checkBuyPrice();
-  }, 100);
+  }, 77);
 
   // 加遮罩面板
   function addMainPanel() {
@@ -63,7 +63,7 @@
   };
 
   // 检查买入价格
-  function checkSellPrice() {
+  function checkBuyPrice() {
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const buyPriceInput = document.getElementById('buyPriceInput');
     buyPriceInput.value = localStorage.getItem('buyPriceInput');
