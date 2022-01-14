@@ -91,8 +91,8 @@
       danger: '0px 0px 0px 3px #F56C6C',
       none: 'none'
     }
+    showDebugMsg('showDebugMsg: '+colorGroup[type])
     dom.style.boxShadow = colorGroup[type];
-    showDebugMsg(dom.style.boxShadow)
   }
 
   // debug显示信息
