@@ -31,8 +31,10 @@
       </div>
       <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 77px; font-size: 14px; padding: 7px 14px;">开关</button>
     `
+    showDebugMsg(panel.children.length)
     document.body.appendChild(panel.children[0]);
     document.body.appendChild(panel.children[1]);
+
   };
 
   // 浮动元素
