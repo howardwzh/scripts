@@ -97,6 +97,6 @@
 
   // debug显示信息
   function showDebugMsg(msg) {
-    document.getElementById(debugMsg).innerText = msg
+    document.getElementById('debugMsg').innerText = msg
   }
 })();
