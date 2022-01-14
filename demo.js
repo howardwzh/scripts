@@ -3,8 +3,10 @@
 
   addMainPanel();
   fixedLastPriceDom();
-  checkSellPrice();
-  checkBuyPrice();
+  setTimeout(() => {
+    checkSellPrice();
+    checkBuyPrice();
+  }, 100);
 
   // 加遮罩面板
   function addMainPanel() {
@@ -23,10 +25,6 @@
       >
         <p><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
         <p><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
-        <p><label>Warning Offset: <input type="text" id="warningOffset77"/></label></p>
-        <p style="margin-top: 20px; text-align: center;"><button style="font-size: 14px; padding: 7px 14px;" id="toggleWarning77">开始监听</button></p>
-        <p style="margin-top: 20px; text-align: center;" id="priceMessage"></p>
-        <iframe style="width:0;height:0;" id="iframeWindow" src="https://xxxxx"/>
       </div>
     `
     document.body.appendChild(panel.children[0]);
@@ -48,11 +46,11 @@
   function checkSellPrice() {
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const sellPriceInput = document.getElementById('sellPriceInput');
-    sellPriceInput.value = localStorage.getItem('sellPriceInput') || 0
+    sellPriceInput.value = localStorage.getItem('sellPriceInput');
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText)
       const sellPrice = Number(sellPriceInput.value)
-      localStorage.getItem('sellPriceInput', sellPrice)
+      localStorage.setItem('sellPriceInput', sellPrice)
       
       if (!sellPrice || lastPrice < sellPrice) {
         setStatusColor(sellPriceInput, 'none')
@@ -68,11 +66,11 @@
   function checkSellPrice() {
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const buyPriceInput = document.getElementById('buyPriceInput');
-    buyPriceInput.value = localStorage.getItem('buyPriceInput') || 0
+    buyPriceInput.value = localStorage.getItem('buyPriceInput');
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText)
       const buyPrice = Number(buyPriceInput.value)
-      localStorage.getItem('buyPriceInput', buyPrice)
+      localStorage.setItem('buyPriceInput', buyPrice)
       
       if(!buyPrice || lastPrice > buyPrice) {
         setStatusColor(buyPriceInput, 'none')
