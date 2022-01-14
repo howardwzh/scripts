@@ -91,7 +91,7 @@
       danger: '0px 0px 3px #F56C6C',
       none: 'none'
     }
-    showDebugMsg('showDebugMsg: '+dom)
+    showDebugMsg('showDebugMsg: '+dom.style.boxShadow)
     dom.style.boxShadow = colorGroup[type];
   }
 
