@@ -124,7 +124,7 @@
     let isEditRemark = false;
     const monitorRemark = document.getElementById('monitorRemark')
     const monitorEditRemark = document.getElementById('monitorEditRemark')
-    monitorRemark.addEventListener('dblclick', () => {
+    monitorRemark.addEventListener('click', () => {
       isEditRemark = !isEditRemark;
       if (isEditRemark) {
         monitorEditRemark.value = monitorRemark.innerText
