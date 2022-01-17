@@ -128,11 +128,11 @@
     monitorRemark.addEventListener('dblclick', () => { 
       isEditRemark = !isEditRemark;
       if (isEditRemark) {
-        monitorEditRemark.innerText = monitorRemark.innerText
+        monitorEditRemark.value = monitorRemark.innerText
         monitorRemark.innerText = '编辑完成后双击保存'
         monitorEditRemark.style.display = 'block'
       } else {
-        monitorRemark.innerText = monitorEditRemark.innerText
+        monitorRemark.innerText = monitorEditRemark.value
         monitorEditRemark.style.display = 'none'
       }
     })    
