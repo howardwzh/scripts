@@ -31,8 +31,8 @@
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
-          <div id="monitorRemark" style="padding: 12px 0;">备注</div>
-          <textarea id="monitorEditRemark" style="display: none;font-size: 14px;" rows="5"></textarea>
+          <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
+          <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
