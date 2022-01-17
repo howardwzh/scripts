@@ -7,7 +7,7 @@
     checkSellPrice();
     checkBuyPrice();
     addEventToClosePanel();
-    addEventToEditRemark();
+    // addEventToEditRemark();
   }, 77);
 
   // 加遮罩面板
