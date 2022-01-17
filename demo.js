@@ -6,9 +6,9 @@
   setTimeout(() => {
     checkSellPrice();
     checkBuyPrice();
-    // addEventToClosePanel();
-    // addEventToEditRemark();
-  }, 77);
+    addEventToClosePanel();
+    addEventToEditRemark();
+  }, 277);
 
   // 加遮罩面板
   function addMainPanel() {
