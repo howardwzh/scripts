@@ -6,7 +6,8 @@
   setTimeout(() => {
     checkSellPrice();
     checkBuyPrice();
-    addEventsListener();
+    addEventToClosePanel();
+    addEventToEditRemark();
   }, 77);
 
   // 加遮罩面板
@@ -30,6 +31,8 @@
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
+          <p id="monitorRemark" style="margin-top: 16px;">备注</p>
+          <input id="editMonitorRemark" style="display: none;font-size: 14px;" type="textarea" row="5" />
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
@@ -107,13 +110,31 @@
     document.getElementById('debugMsg').innerText = msg;
   }
 
-  // 加上监听事件
-  function addEventsListener() {
+  // 打开/关闭 面板
+  function addEventToClosePanel() {
     let showPanel = true;
     document.getElementById('toggleBtn').addEventListener('click', () => {
       showPanel = !showPanel;
       toggleShowPanel(showPanel);
-    });
+    });  
+  }
+
+  // 打开/关闭 编辑备注
+  function addEventToEditRemark() {
+    let isEditRemark = false;
+    const monitorRemark = document.getElementById('monitorRemark')
+    const monitorEditRemark = document.getElementById('monitorEditRemark')
+    monitorRemark.addEventListener('dblclick', () => {
+      isEditRemark = !isEditRemark;
+      if (isEditRemark) {
+        monitorEditRemark.value = monitorRemark.innerText
+        monitorRemark.innerText = '编辑完成后双击保存'
+        monitorEditRemark.style.display = 'block'
+      } else {
+        monitorRemark.innerText = monitorEditRemark.value
+        monitorEditRemark.style.display = 'none'
+      }
+    })    
   }
 
   // 显示/隐藏监听面板
