@@ -6,7 +6,7 @@
   setTimeout(() => {
     checkSellPrice();
     checkBuyPrice();
-    addEventToClosePanel();
+    // addEventToClosePanel();
     // addEventToEditRemark();
   }, 77);
 
