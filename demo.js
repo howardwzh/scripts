@@ -31,7 +31,7 @@
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
-          <p id="monitorRemark" style="margin-top: 16px;">备注</p>
+          <p id="monitorRemark" style="padding-top: 12px 0; background-color: #ddd;">备注</p>
           <input id="editMonitorRemark" style="display: none;font-size: 14px;" type="textarea" row="5" />
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
@@ -124,7 +124,7 @@
     let isEditRemark = false;
     const monitorRemark = document.getElementById('monitorRemark')
     const monitorEditRemark = document.getElementById('monitorEditRemark')
-    monitorRemark.addEventListener('click', () => {
+    monitorRemark.addEventListener('dblclick', () => {
       isEditRemark = !isEditRemark;
       if (isEditRemark) {
         monitorEditRemark.value = monitorRemark.innerText
