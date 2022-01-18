@@ -59,7 +59,7 @@
   function pushPriceToHistory() {
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const monitorHistory = document.getElementById('monitorHistory');
-    const historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
+    let historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
       if (lastPrice !== historyList[0]) {
