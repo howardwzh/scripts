@@ -29,7 +29,7 @@
           font-size: 14px;
           "
         >
-          <div id="monitorHistory"></div>
+          <div id="monitorHistory">test</div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
@@ -66,7 +66,7 @@
         historyList.unshift(lastPrice);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
-      monitorHistory.innerHTML(`<span>${historyList.slice(1).join('</span><span>')}</span>`);
+      monitorHistory.innerHTML(`<div><span>${historyList.slice(1).join('</span><span>')}</span></div>`);
     }, 500);
   };
 
