@@ -24,12 +24,12 @@
           right:0;  
           background-color: #fff; 
           z-index:777777;
-          padding: 100px 27px;
+          padding: 88px 27px;
           text-align: center;
           font-size: 14px;
           "
         >
-          <div id="monitorHistory" style="font-size: 14px;"></div>
+          <div id="monitorHistory" style="font-size: 14px; text-align: left;"></div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
