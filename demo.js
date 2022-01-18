@@ -3,6 +3,7 @@
 
   addMainPanel();
   fixedLastPriceDom();
+  pushPriceToHistory();
   setTimeout(() => {
     checkSellPrice();
     checkBuyPrice();
@@ -28,6 +29,7 @@
           font-size: 14px;
           "
         >
+          <div id="monitorHistory"></div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
@@ -51,6 +53,21 @@
       background-color:#777;
       padding: 2px 7px;
     `);
+  };
+
+  // 不同价格历史记录
+  function pushPriceToHistory() {
+    const lastPriceDom = document.getElementById('_spanLastPrice');
+    const monitorHistory = document.getElementById('monitorHistory');
+    const historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
+    setInterval(() => {
+      const lastPrice = lastPriceDom.innerText;
+      if (lastPrice !== historyList[0]) {
+        historyList.unshift(lastPrice);
+        localStorage.setItem('monitorHistory', JSON.stringify(historyList));
+      }
+      monitorHistory.innerHTML(`<span>${historyList.slice(1).join('</span><span>')}</span>`);
+    }, 500);
   };
 
   // 检查卖出价格
@@ -122,19 +139,19 @@
   // 打开/关闭 编辑备注
   function addEventToEditRemark() {
     let isEditRemark = false;
-    const monitorRemark = document.getElementById('monitorRemark')
-    const monitorEditRemark = document.getElementById('monitorEditRemark')
+    const monitorRemark = document.getElementById('monitorRemark');
+    const monitorEditRemark = document.getElementById('monitorEditRemark');
     monitorRemark.innerText = localStorage.getItem('monitorRemark') || '备注';
 
     monitorRemark.addEventListener('dblclick', () => { 
       isEditRemark = !isEditRemark;
       if (isEditRemark) {
         monitorEditRemark.style.display = 'block'
-        monitorEditRemark.value = monitorRemark.innerText
-        monitorRemark.innerText = '编辑完成后双击保存'
+        monitorEditRemark.value = monitorRemark.innerText;
+        monitorRemark.innerText = '编辑完成后双击保存';
       } else {
-        monitorEditRemark.style.display = 'none'
-        monitorRemark.innerText = monitorEditRemark.value || '备注'
+        monitorEditRemark.style.display = 'none';
+        monitorRemark.innerText = monitorEditRemark.value || '备注';
         localStorage.setItem('monitorRemark', monitorRemark.innerText);
       }
     })    
