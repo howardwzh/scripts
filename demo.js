@@ -67,7 +67,8 @@
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
       monitorHistory.innerHTML(`<div><span>${historyList.slice(1).join('</span><span>')}</span></div>`);
-    }, 500);
+      showDebugMsg(lastPrice)
+    }, 1000);
   };
 
   // 检查卖出价格
