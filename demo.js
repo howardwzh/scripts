@@ -3,8 +3,8 @@
 
   addMainPanel();
   fixedLastPriceDom();
-  pushPriceToHistory();
   setTimeout(() => {
+    pushPriceToHistory();
     checkSellPrice();
     checkBuyPrice();
     addEventToClosePanel();
