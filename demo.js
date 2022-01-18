@@ -29,7 +29,7 @@
           font-size: 14px;
           "
         >
-          <div id="monitorHistory">test</div>
+          <div id="monitorHistory" style="font-size: 14px;"></div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
@@ -59,16 +59,15 @@
   function pushPriceToHistory() {
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const monitorHistory = document.getElementById('monitorHistory');
-    showDebugMsg(localStorage.getItem('monitorHistory'))
     const historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
-      showDebugMsg(lastPrice)
       if (lastPrice !== historyList[0]) {
         historyList.unshift(lastPrice);
+        historyList = historyList.slice(0,10);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
-      monitorHistory.innerHTML(`<div><span>${historyList.slice(1).join('</span><span>')}</span></div>`);
+      monitorHistory.innerHTML = `<div><span style="margin-right: 16px;">${historyList.slice(1).join('</span><span style="margin-right: 16px;">')}</span></div>`;
     }, 1000);
   };
 
@@ -121,7 +120,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    // showDebugMsg(`🍀🎉💰恭喜发财💰🎉🍀`);
+    showDebugMsg(`🍀🎉💰恭喜发财💰🎉🍀`);
   }
 
   // debug显示信息
