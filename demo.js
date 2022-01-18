@@ -60,14 +60,15 @@
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const monitorHistory = document.getElementById('monitorHistory');
     const historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
+    showDebugMsg(historyList)
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
+      showDebugMsg(lastPrice)
       if (lastPrice !== historyList[0]) {
         historyList.unshift(lastPrice);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
       monitorHistory.innerHTML(`<div><span>${historyList.slice(1).join('</span><span>')}</span></div>`);
-      showDebugMsg(lastPrice)
     }, 1000);
   };
 
