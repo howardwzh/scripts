@@ -78,7 +78,7 @@
     for(let i = 1; i < historyList.length; i++) {
       const offset = Math.round((historyList[i-1] - historyList[i]) * 1000) / 1000
       result += `
-        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset.toFixed(3)}</span>
+        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>
         <span style="margin: 0 7px;">${historyList[i]}</span>
       `
     }
