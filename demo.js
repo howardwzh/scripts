@@ -29,7 +29,7 @@
           font-size: 14px;
           "
         >
-          <div id="monitorHistory" style="font-size: 14px; text-align: left;"></div>
+          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute;"></div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
@@ -49,7 +49,7 @@
       position:fixed;
       z-index:7777777;
       left:27px;
-      top:27px;
+      top:77px;
       background-color:#777;
       padding: 2px 7px;
     `);
@@ -63,9 +63,9 @@
     monitorHistory.innerHTML = makeHistoryHtml(historyList);
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
-      if (lastPrice !== historyList[0]) {
-        historyList.unshift(lastPrice);
-        historyList = historyList.slice(0,10);
+      if (lastPrice !== historyList[historyList.length - 1]) {
+        historyList.push(lastPrice);
+        historyList = historyList.slice(-10);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
@@ -75,11 +75,11 @@
   // 拼接历史记录html
   function makeHistoryHtml(historyList) {
     let result = '<div style="font-size: 14px;">'
-    for(let i = 1; i < historyList.length; i++) {
-      const offset = Math.round((historyList[i-1] - historyList[i]) * 1000) / 1000
+    for(let i = 0; i < historyList.length; i++) {
+      const offset = i > 0 ? Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000 : 0
       result += `
-        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>
-        <span style="margin: 0 7px;">${historyList[i]}</span>
+        ${i > 0 ? `<span style="margin: 0 7px; background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
+        ${i < historyList.length - 1 ? `<span>${historyList[i]}</span>` : ''}
       `
     }
     result += '</div>'
