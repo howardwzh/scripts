@@ -23,13 +23,13 @@
           left: 0; 
           right:0;  
           background-color: #fff; 
-          z-index:777777;
-          padding: 88px 27px;
+          z-index: 777777;
+          padding: 127px 27px;
           text-align: center;
           font-size: 14px;
           "
         >
-          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute;"></div>
+          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
           <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
           <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
           <p id="debugMsg"></p>
