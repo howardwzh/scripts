@@ -36,7 +36,7 @@
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 77px; height: 77px; opacity: 0.3; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 77px; height: 77px; opacity: 0; bottom: 77px; right: 27px; font-size: 14px; padding: 7px 14px;">开关</button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -78,8 +78,8 @@
     for(let i = 1; i < historyList.length; i++) {
       const offset = Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000
       result += `
-        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px;">${offset.toFixed(3)}</span>
-        <span style="margin: 0 12px;">${historyList[i]}</span>
+        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset.toFixed(3)}</span>
+        <span style="margin: 0 7px;">${historyList[i]}</span>
       `
     }
     result += '</div>'
