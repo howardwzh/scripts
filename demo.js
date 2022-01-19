@@ -76,10 +76,10 @@
   function makeHistoryHtml(historyList) {
     let result = '<div style="font-size: 14px;">'
     for(let i = 1; i < historyList.length; i++) {
-      const offset = historyList[i] - historyList[i-1]
+      const offset = Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000
       result += `
-        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px;">${offset}</span>
-        <span style="margin-left: 16px;">${historyList[i]}</span>
+        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px;">${offset.toFixed(3)}</span>
+        <span style="margin: 0 12px;">${historyList[i]}</span>
       `
     }
     result += '</div>'
