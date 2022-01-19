@@ -60,16 +60,31 @@
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const monitorHistory = document.getElementById('monitorHistory');
     let historyList = JSON.parse(localStorage.getItem('monitorHistory') || '[]');
+    monitorHistory.innerHTML = makeHistoryHtml(historyList);
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
       if (lastPrice !== historyList[0]) {
         historyList.unshift(lastPrice);
         historyList = historyList.slice(0,10);
+        monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
       }
-      monitorHistory.innerHTML = `<div><span style="margin-right: 16px;">${historyList.slice(1).join('</span><span style="margin-right: 16px;">')}</span></div>`;
     }, 1000);
   };
+
+  // 拼接历史记录html
+  function makeHistoryHtml(historyList) {
+    let result = '<div style="font-size: 14px;">'
+    for(let i = 1; i < historyList.length; i++) {
+      const offset = historyList[i] - historyList[i-1]
+      result += `
+        <span style="background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px;">${offset}</span>
+        <span style="margin-left: 16px;">${historyList[i]}</span>
+      `
+    }
+    result += '</div>'
+    return result
+  }
 
   // 检查卖出价格
   function checkSellPrice() {
