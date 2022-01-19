@@ -24,7 +24,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 127px 27px;
+          padding: 137px 27px;
           text-align: center;
           font-size: 14px;
           "
@@ -49,7 +49,7 @@
       position:fixed;
       z-index:7777777;
       left:27px;
-      top:77px;
+      top: 97px;
       background-color:#777;
       padding: 2px 7px;
     `);
