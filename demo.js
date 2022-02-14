@@ -215,8 +215,8 @@
       // speech.voice = 10 // 获取并设置说话的声音
       // speech.volume = 1 // 获取并设置说话的音量
       // speech.lang = speechSynthesis.getVoices()[0] // 设置播放语言，测试没效果
+      // speech.lang = 'zh-CN'
       // speech.cancel() // 删除队列中所有的语音.如果正在播放,则直接停止
-      speech.lang = 'zh-CN'
       speech.text = msg // 获取并设置说话时的文本
       speechSynthesis.speak(speech);
       speakTimes();
