@@ -68,6 +68,7 @@
         historyList = historyList.slice(-10);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
+        speakHelper.speak(lastPrice)
       }
     }, 1000);
   };
@@ -185,4 +186,61 @@
       monitorMainPanel.style.display = 'none';
     }
   }
+
+  // 朗读
+  const speakHelper = (function() {
+    const speech = new SpeechSynthesisUtterance();
+    const SPEAK_TIMES = 3
+    let times = 0
+    let interval
+
+    function speakTimes() {
+      times = 0
+      interval && clearInterval(interval)
+      interval = setInterval(() => {
+        if (!speechSynthesis.paused) return
+        times += 1
+        if (times > SPEAK_TIMES) {
+          clearInterval(interval)
+        } else {
+          speechSynthesis.resume();
+        }
+      }, 500)
+    }
+
+    // 播放
+    function speak(msg) {
+      // speech.pitch = 1 // 获取并设置话语的音调(值越大越尖锐,越低越低沉)
+      // speech.rate  = 5 // 获取并设置说话的速度(值越大语速越快,越小语速越慢)
+      // speech.voice = 10 // 获取并设置说话的声音
+      // speech.volume = 1 // 获取并设置说话的音量
+      // speech.lang = speechSynthesis.getVoices()[0] // 设置播放语言，测试没效果
+      // speech.cancel() // 删除队列中所有的语音.如果正在播放,则直接停止
+      speech.lang = 'zh-CN'
+      speech.text = msg // 获取并设置说话时的文本
+      speechSynthesis.speak(speech);
+      speakTimes();
+    }
+
+    // 暂停
+    function pause() {
+      speechSynthesis.pause()
+    }
+    // 继续播放
+    function resume() {
+      speechSynthesis.resume()
+    }
+
+    // 取消播放
+    function cancel() {
+      speechSynthesis.cancel()
+    }
+
+    return {
+      speak,
+      pause,
+      resume,
+      cancel
+    }
+  })()
 })();
