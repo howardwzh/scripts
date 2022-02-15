@@ -31,11 +31,11 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p><label><span style="display: inline-block; width: 90px; text-align: right">SellPrice：</span><input type="text" id="sellPriceInput"/></label></p>
-          <p><label><span style="display: inline-block; width: 90px; text-align: right">SoldNumber：</span><input type="text" id="soldNumberInput"/></label></p>
-          <p><label><span style="display: inline-block; width: 90px; text-align: right">SoldMoney：</span><input type="text" id="soldMoneyInput"/></label></p>
+          <p><label><span>SellPrice：</span><input style="width: 100%" type="text" id="sellPriceInput"/></label></p>
+          <p><label><span>SoldNumber：</span><input style="width: 100%" type="text" id="soldNumberInput"/></label></p>
+          <p><label><span>SoldMoney：</span><input style="width: 100%" type="text" id="soldMoneyInput"/></label></p>
           <br>
-          <p><label><span style="display: inline-block; width: 90px; text-align: right">BuyPrice：</span><input type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p><label><span>BuyPrice：</span><input style="width: 100%" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
           <p id="suggestPriceListDom"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
