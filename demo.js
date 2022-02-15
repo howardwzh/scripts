@@ -209,20 +209,17 @@
       localStorage.setItem('soldNumberInput', soldNumber || '');
       localStorage.setItem('soldMoneyInput', soldMoney || '');
       if (!soldNumber || !soldMoney) {
-        winNumber.innerHTML = ''
         suggestPriceListDom.innerHTML = ''
+        winNumber.innerHTML = ''
         return
-      }
-      if (buyPrice) {
-        winNumber.innerHTML = `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})`
       }
       const suggestPriceList = []
       for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
         const price = (soldMoney/(soldNumber*(1+FEE_RATE)+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
         suggestPriceList.push(`${price}(${WIN_NUMBER_GROUP[i]})`)
       }
-
       suggestPriceListDom.innerHTML = `<span>${suggestPriceList.join('</span><span style="margin-left: 15px">')}</span>`
+      winNumber.innerHTML = buyPrice ? `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})` : ''
     }, 1000);
   }
 
