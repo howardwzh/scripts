@@ -40,7 +40,7 @@
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 356px; left: 50%; margin-left: -27px; border-radius: 50%; font-size: 14px; padding: 7px 14px;"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 386px; left: 50%; margin-left: -27px; border-radius: 50%; font-size: 14px; padding: 7px 14px;"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
