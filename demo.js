@@ -100,7 +100,7 @@
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText);
       const sellPrice = Number(sellPriceInput.value||0);
-      localStorage.setItem('sellPriceInput', sellPrice);
+      localStorage.setItem('sellPriceInput', sellPrice || '');
       
       if (!sellPrice || lastPrice < sellPrice) {
         setStatusColor(sellPriceInput, 'none');
@@ -120,7 +120,7 @@
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText);
       const buyPrice = Number(buyPriceInput.value||0);
-      localStorage.setItem('buyPriceInput', buyPrice);
+      localStorage.setItem('buyPriceInput', buyPrice || '');
       
       if(!buyPrice || lastPrice > buyPrice) {
         setStatusColor(buyPriceInput, 'none');
@@ -196,6 +196,8 @@
   const WIN_NUMBER_GROUP = [1,10,50,100]
   const FEE_RATE = 0.0025
   function computeSuggestPrice() {
+    const winNumber = document.getElementById('winNumber')
+    const suggestPriceListDom = document.getElementById('suggestPriceListDom')
     const soldNumberInput = document.getElementById('soldNumberInput')
     const soldMoneyInput = document.getElementById('soldMoneyInput')
     soldNumberInput.value = localStorage.getItem('soldNumberInput');
@@ -204,11 +206,15 @@
       const buyPrice = Number(localStorage.getItem('buyPriceInput')||0);
       const soldNumber = Number(soldNumberInput.value||0);
       const soldMoney = Number(soldMoneyInput.value||0);
-      localStorage.setItem('soldNumberInput', soldNumber);
-      localStorage.setItem('soldMoneyInput', soldMoney);
-      if (!soldNumberInput.value || !soldMoneyInput.value) return
+      localStorage.setItem('soldNumberInput', soldNumber || '');
+      localStorage.setItem('soldMoneyInput', soldMoney || '');
+      if (!soldNumber || !soldMoney) {
+        winNumber.innerHTML = ''
+        suggestPriceListDom.innerHTML = ''
+        return
+      }
       if (buyPrice) {
-        document.getElementById('winNumber').innerHTML = `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})`
+        winNumber.innerHTML = `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})`
       }
       const suggestPriceList = []
       for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
@@ -216,9 +222,7 @@
         suggestPriceList.push(`${price}(${WIN_NUMBER_GROUP[i]})`)
       }
 
-      document.getElementById('suggestPriceListDom').innerHTML = `
-        <span>${suggestPriceList.join('</span><span style="margin-left: 15px">')}</span>
-      `
+      suggestPriceListDom.innerHTML = `<span>${suggestPriceList.join('</span><span style="margin-left: 15px">')}</span>`
     }, 1000);
   }
 
