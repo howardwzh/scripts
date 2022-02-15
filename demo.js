@@ -31,10 +31,10 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="sellPriceInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldNumber：</span><input style="width: 100%; min-height: 30px" type="text" id="soldNumberInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldMoney：</span><input style="width: 100%; min-height: 30px" type="text" id="soldMoneyInput"/></label></p>
-          <p  style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p style="margin:0;padding-top:16px"><label><span>SellPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="sellPriceInput"/></label></p>
+          <p style="margin:0;padding-top:16px"><label><span>SoldNumber：</span><input style="width: 100%; min-height: 30px" type="text" id="soldNumberInput"/></label></p>
+          <p style="margin:0;padding-top:16px"><label><span>SoldMoney：</span><input style="width: 100%; min-height: 30px" type="text" id="soldMoneyInput"/></label></p>
+          <p  style="margin:0;padding-top:54px"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
           <p id="suggestPriceListDom"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
