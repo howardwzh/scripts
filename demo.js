@@ -31,16 +31,16 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="sellPriceInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldNumber：</span><input style="width: 100%; min-height: 30px" type="text" id="soldNumberInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldMoney：</span><input style="width: 100%; min-height: 30px" type="text" id="soldMoneyInput"/></label></p>
-          <p  style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 30px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p style="margin:16px 0 0"><label><span>SellPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="sellPriceInput"/></label></p>
+          <p style="margin:16px 0 0"><label><span>SoldNumber：</span><input style="width: 100%; min-height: 28px" type="text" id="soldNumberInput"/></label></p>
+          <p style="margin:16px 0 0"><label><span>SoldMoney：</span><input style="width: 100%; min-height: 28px" type="text" id="soldMoneyInput"/></label></p>
+          <p  style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
           <p id="suggestPriceListDom"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 382px; left: 50%; margin-left: -27px; border-radius: 50%; font-size: 14px; padding: 7px 14px;"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 378px; left: 50%; margin-left: -27px; border-radius: 50%; font-size: 14px; padding: 7px 14px;"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
