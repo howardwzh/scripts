@@ -9,6 +9,7 @@
     checkBuyPrice();
     addEventToClosePanel();
     addEventToEditRemark();
+    computeSuggestPrice()
   }, 277);
 
   // 加遮罩面板
@@ -30,8 +31,12 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p id="sellPriceItem"><label>Sell: <input type="text" id="sellPriceInput"/></label></p>
-          <p id="buyPriceItem"><label>Buy: <input type="text" id="buyPriceInput"/></label></p>
+          <p><label><span style="display: inline-block; width: 90px; text-align: right">SellPrice：</span><input type="text" id="sellPriceInput"/></label></p>
+          <p><label><span style="display: inline-block; width: 90px; text-align: right">SoldNumber：</span><input type="text" id="soldNumberInput"/></label></p>
+          <p><label><span style="display: inline-block; width: 90px; text-align: right">SoldMoney：</span><input type="text" id="soldMoneyInput"/></label></p>
+          <br>
+          <p><label><span style="display: inline-block; width: 90px; text-align: right">BuyPrice：</span><input type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p id="suggestPriceListDom"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
@@ -185,6 +190,36 @@
       lastPriceDom.style.position = 'static';
       monitorMainPanel.style.display = 'none';
     }
+  }
+
+  // 价格建议
+  const WIN_NUMBER_GROUP = [1,10,50,100]
+  const FEE_RATE = 0.0025
+  function computeSuggestPrice() {
+    const soldNumberInput = document.getElementById('soldNumberInput')
+    const soldMoneyInput = document.getElementById('soldMoneyInput')
+    soldNumberInput.value = localStorage.getItem('soldNumberInput');
+    soldMoneyInput.value = localStorage.getItem('soldMoneyInput');
+    setInterval(() => {
+      const buyPrice = Number(localStorage.getItem('buyPriceInput')||0);
+      const soldNumber = Number(soldNumberInput.value||0);
+      const soldMoney = Number(soldMoneyInput.value||0);
+      localStorage.setItem('soldNumberInput', soldNumber);
+      localStorage.setItem('soldMoneyInput', soldMoney);
+      if (!soldNumberInput.value || !soldMoneyInput.value) return
+      if (buyPrice) {
+        document.getElementById('winNumber').innerHTML = `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})`
+      }
+      const suggestPriceList = []
+      for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
+        const price = (soldMoney/(soldNumber*(1+FEE_RATE)+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
+        suggestPriceList.push(`${price}(${WIN_NUMBER_GROUP[i]})`)
+      }
+
+      document.getElementById('suggestPriceListDom').innerHTML = `
+        <span>${suggestPriceList.join('</span><span style="margin-left: 15px">')}</span>
+      `
+    }, 1000);
   }
 
   // 朗读
