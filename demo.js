@@ -99,8 +99,8 @@
     sellPriceInput.value = localStorage.getItem('sellPriceInput');
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText);
-      const sellPrice = Number(sellPriceInput.value||0);
-      localStorage.setItem('sellPriceInput', sellPrice || '');
+      const sellPrice = Number(sellPriceInput.value ? sellPriceInput.value.split(',')[0] : 0);
+      localStorage.setItem('sellPriceInput', sellPriceInput.value || '');
       
       if (!sellPrice || lastPrice < sellPrice) {
         setStatusColor(sellPriceInput, 'none');
