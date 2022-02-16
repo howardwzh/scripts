@@ -1,11 +1,13 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
+  let totalNumber = 0
+  let totalMoney = 0
 
   addMainPanel();
   fixedLastPriceDom();
   setTimeout(() => {
     pushPriceToHistory();
-    checkSellPrice();
+    checkAllSellPrices();
     checkBuyPrice();
     addEventToClosePanel();
     addEventToEditRemark();
@@ -31,16 +33,15 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="sellPriceInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldNumber：</span><input style="width: 100%; min-height: 28px" type="text" id="soldNumberInput"/></label></p>
-          <p style="margin:16px 0 0"><label><span>SoldMoney：</span><input style="width: 100%; min-height: 28px" type="text" id="soldMoneyInput"/></label></p>
-          <p  style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
-          <p id="suggestPriceListDom"></p>
+          <p style="margin:16px 0 0"><label><span>SellPrice：</span><textarea style="width: 100%;min-height: 77px" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label>Total Number:<span id="totalNumberBox" style="margin-right: 20px"></span>Total Money:<span id="totalMoneyBox"></span></label></p>
+          <p style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 382px; left: 50%; margin-left: -27px; border-radius: 50%; font-size: 14px; padding: 7px 14px;"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 382px; left: 50%; margin-left: -27px; font-size: 14px; padding: 7px 14px;"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -92,23 +93,46 @@
   }
 
   // 检查卖出价格
-  function checkSellPrice() {
-    const lastPriceDom = document.getElementById('_spanLastPrice');
+  function checkAllSellPrices() {
     const sellPriceInput = document.getElementById('sellPriceInput');
     sellPriceInput.value = localStorage.getItem('sellPriceInput');
     setInterval(() => {
-      const lastPrice = Number(lastPriceDom.innerText);
-      const sellPrice = Number(sellPriceInput.value ? sellPriceInput.value.split(',')[0] : 0);
-      localStorage.setItem('sellPriceInput', sellPriceInput.value || '');
-      
-      if (!sellPrice || lastPrice < sellPrice) {
-        setStatusColor(sellPriceInput, 'none');
-      } else if (lastPrice >= sellPrice + 0.5) {
-        setStatusColor(sellPriceInput, 'danger');
-      } else if (lastPrice >= sellPrice) {
-        setStatusColor(sellPriceInput, 'success');
+      if (sellPriceInput === document.activeElement) return
+      const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
+      const sellPrices = sellPriceInput.value.split('\n')
+      totalNumber = 0
+      totalMoney = 0
+      for (let i = 0; i < sellPrices.length; i++) {
+        sellPrices[i] = checkSellPrice(sellPrices[i], lastPrice)
       }
+      if(totalNumber) {
+        setStatusColor(sellPriceInput, 'success');
+      } else {
+        setStatusColor(sellPriceInput, 'none');
+      }
+      document.getElementById('totalNumberBox').innerText = totalNumber.toFixed(4).slice(0, -1)
+      document.getElementById('totalMoneyBox').innerText = totalMoney.toFixed(4).slice(0, -1)
+      sellPriceInput.value = sellPrices.join('\n')
+      localStorage.setItem('sellPriceInput', sellPriceInput.value);
     }, 1000);
+  };
+
+  // 检查卖出价格
+  function checkSellPrice(sellPrice, lastPrice) {
+    const [price, other=''] = sellPrice.split('*')
+    const [number, lumpSum] = other.split("=")
+    const needCount = /=/.test(sellPrice)
+    let result = sellPrice
+    if (lumpSum) {
+      totalNumber += Number(number)
+      totalMoney += Number(lumpSum)
+    } else if (number && (needCount || lastPrice >= price)) {
+      const _lumpSum = (price*number).toFixed(4).slice(0, -1)
+      totalNumber += Number(number)
+      totalMoney += Number(_lumpSum)
+      result = `${price}*${number}=${_lumpSum}`
+    }
+    return result
   };
 
   // 检查买入价格
@@ -197,28 +221,22 @@
   function computeSuggestPrice() {
     const winNumber = document.getElementById('winNumber')
     const suggestPriceListDom = document.getElementById('suggestPriceListDom')
-    const soldNumberInput = document.getElementById('soldNumberInput')
-    const soldMoneyInput = document.getElementById('soldMoneyInput')
-    soldNumberInput.value = localStorage.getItem('soldNumberInput');
-    soldMoneyInput.value = localStorage.getItem('soldMoneyInput');
     setInterval(() => {
       const buyPrice = Number(localStorage.getItem('buyPriceInput')||0);
-      const soldNumber = Number(soldNumberInput.value||0);
-      const soldMoney = Number(soldMoneyInput.value||0);
-      localStorage.setItem('soldNumberInput', soldNumber || '');
-      localStorage.setItem('soldMoneyInput', soldMoney || '');
-      if (!soldNumber || !soldMoney) {
+      if (!totalNumber || !totalMoney) {
         suggestPriceListDom.innerHTML = ''
         winNumber.innerHTML = ''
         return
       }
       const suggestPriceList = []
       for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
-        const price = (soldMoney/(soldNumber*(1+FEE_RATE)+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
-        suggestPriceList.push(`${price}(${WIN_NUMBER_GROUP[i]})`)
+        const price = (totalMoney/(totalNumber*(1+FEE_RATE)+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
+        suggestPriceList.push(`${price}(+${WIN_NUMBER_GROUP[i]})`)
       }
-      suggestPriceListDom.innerHTML = `<span>${suggestPriceList.join('</span><span style="margin-left: 15px">')}</span>`
-      winNumber.innerHTML = buyPrice ? `(${(soldMoney/buyPrice).toFixed(4).slice(0, -1)})` : ''
+      suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
+      const _buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
+      const offsetNumber = (_buyedTotalNumber-totalNumber).toFixed(4).slice(0, -1)
+      winNumber.innerHTML = buyPrice ? `${totalNumber}${offsetNumber > 0 ? ` + ${offsetNumber}`:` - ${offsetNumber}`} = ${_buyedTotalNumber}` : ''
     }, 1000);
   }
 
