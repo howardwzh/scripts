@@ -120,17 +120,14 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     const [price, other=''] = sellPrice.split('*')
-    const [number, lumpSum] = other.split("=")
+    const [number] = other.split("=")
     const needCount = /=/.test(sellPrice)
     let result = sellPrice
-    if (lumpSum) {
+    if (number && (needCount || lastPrice >= price)) {
+      const lumpSum = (price*number).toFixed(4).slice(0, -1)
       totalNumber += Number(number)
       totalMoney += Number(lumpSum)
-    } else if (number && (needCount || lastPrice >= price)) {
-      const _lumpSum = (price*number).toFixed(4).slice(0, -1)
-      totalNumber += Number(number)
-      totalMoney += Number(_lumpSum)
-      result = `${price}*${number}=${_lumpSum}`
+      result = `${price}*${number}=${lumpSum}`
     }
     return result
   };
