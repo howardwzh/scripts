@@ -33,7 +33,7 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrice：</span><textarea style="width: 100%;min-height: 77px" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label><span>SellPrice：</span><textarea style="font-size: 14px;width: 100%;min-height: 77px" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:16px 0 0"><label>Total Number:<span id="totalNumberBox" style="margin-right: 20px"></span>Total Money:<span id="totalMoneyBox"></span></label></p>
           <p style="margin:54px 0 0"><label><span>BuyPrice：</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
