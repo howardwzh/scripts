@@ -233,8 +233,8 @@
       suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
       const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
       const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
-      const real = Number((buyedTotalNumber-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${real > 0 ? `+ ${real}` : `- ${Math.abs(real)}`} = ${buyedTotalNumber}` : ''
+      const offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
+      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ ${offsetNumber}` : `- ${Math.abs(offsetNumber)}`} = ${buyedTotalNumber}` : ''
     }, 1000);
   }
 
