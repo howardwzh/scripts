@@ -2,6 +2,7 @@
   if (!document.getElementById('_spanLastPrice')) return;
   let totalNumber = 0
   let totalMoney = 0
+  const FEE_RATE = 0.0025
 
   addMainPanel();
   fixedLastPriceDom();
@@ -124,7 +125,7 @@
     const needCount = /=/.test(sellPrice)
     let result = sellPrice
     if (number && (needCount || lastPrice >= price)) {
-      const lumpSum = (price*number).toFixed(4).slice(0, -1)
+      const lumpSum = (price*number*(1-FEE_RATE)).toFixed(4).slice(0, -1)
       totalNumber += Number(number)
       totalMoney += Number(lumpSum)
       result = `${price}*${number}=${lumpSum}`
@@ -214,7 +215,6 @@
 
   // 价格建议
   const WIN_NUMBER_GROUP = [1,10,50,100]
-  const FEE_RATE = 0.0025
   function computeSuggestPrice() {
     const winNumber = document.getElementById('winNumber')
     const suggestPriceListDom = document.getElementById('suggestPriceListDom')
