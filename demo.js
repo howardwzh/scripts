@@ -234,7 +234,7 @@
       const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
       const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
       const real = Number((buyedTotalNumber-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) + ${real > 0 ? ` + ${real}` : ` - ${Math.abs(real)}`} = ${buyedTotalNumber}` : ''
+      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${real > 0 ? `+ ${real}` : `- ${Math.abs(real)}`} = ${buyedTotalNumber}` : ''
     }, 1000);
   }
 
