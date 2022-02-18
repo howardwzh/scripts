@@ -227,7 +227,7 @@
       }
       const suggestPriceList = []
       for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
-        const price = (totalMoney/(totalNumber*(1+FEE_RATE)+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
+        const price = (totalMoney*(1-FEE_RATE)/(totalNumber+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
         suggestPriceList.push(`${price}(+${WIN_NUMBER_GROUP[i]})`)
       }
       suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
