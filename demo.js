@@ -234,7 +234,7 @@
       const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
       const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
       const offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ ${offsetNumber}` : `- ${Math.abs(offsetNumber)}`} = ${buyedTotalNumber}` : ''
+      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ <b style="color:#5384ec">${offsetNumber}</b>` : `- <b style="color:#d85140">${Math.abs(offsetNumber)}</b>`} = ${buyedTotalNumber}` : ''
     }, 1000);
   }
 
