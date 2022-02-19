@@ -31,13 +31,13 @@
           padding: 137px 27px;
           text-align: center;
           font-size: 14px;
-          font-family: Helvetica;
+          font-family: Arial;
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Helvetica;" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:4px 0 0"><label>Total Number：<b id="totalNumberBox" style="margin-right: 24px"></b>Total Money：<b id="totalMoneyBox"></b></label></p>
-          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px;font-family: Helvetica;font-size: 14px;" type="text" id="buyPriceInput"/></label></p>
+          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/></label></p>
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
