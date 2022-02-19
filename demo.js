@@ -131,7 +131,7 @@
       const lumpSum = (price*number*(1-FEE_RATE)).toFixed(4).slice(0, -1)
       totalNumber += Number(number)
       totalMoney += Number(lumpSum)
-      result = `${price}*${number}=${lumpSum}`
+      result = `${price}*${number}=${lumpSum} (Fee removed)`
     }
     return result
   };
