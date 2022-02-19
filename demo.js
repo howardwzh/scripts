@@ -34,9 +34,10 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;" rows="5" id="sellPriceInput"></textarea></label></p>
-          <p style="margin:0"><label>Total Number：<span id="totalNumberBox" style="margin-right: 20px"></span>Total Money：<span id="totalMoneyBox"></span></label></p>
-          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label><span id="winNumber"></span></p>
+          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:5px 0 0"><label>Total Number：<b id="totalNumberBox" style="margin-right: 20px"></b>Total Money：<b id="totalMoneyBox"></b></label></p>
+          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label></p>
+          <p style="margin:5px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
