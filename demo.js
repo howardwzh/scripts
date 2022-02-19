@@ -34,9 +34,9 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: sans-serif;" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:4px 0 0"><label>Total Number：<b id="totalNumberBox" style="margin-right: 20px"></b>Total Money：<b id="totalMoneyBox"></b></label></p>
-          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px" type="text" id="buyPriceInput"/></label></p>
+          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px;font-family: sans-serif;" type="text" id="buyPriceInput"/></label></p>
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
@@ -163,7 +163,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`🍀🎉💰恭喜发财💰🎉🍀`);
+    showDebugMsg(`🙏🍀💰财富正义💰🍀🙏`);
   }
 
   // debug显示信息
