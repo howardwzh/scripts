@@ -87,8 +87,9 @@
     let result = '<div style="font-size: 14px;">'
     for(let i = 0; i < historyList.length; i++) {
       const offset = i > 0 ? Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000 : 0
+      const criticalValue = i > 0 ? Math.min(historyList[i], historyList[i-1]) / 100 : 999999
       result += `
-        ${i > 0 ? `<span style="margin: 0 7px; background-color: ${ Math.abs(offset) < 0.5 ? '#909399' : '#E6A23C'}; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
+        ${i > 0 ? `<span style="background-color: ${ Math.abs(offset) < criticalValue ? '#909399' : '#E6A23C'};margin: 0 7px; border-radius: 3px; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
         ${i < historyList.length - 1 ? `<span>${historyList[i]}</span>` : ''}
       `
     }
