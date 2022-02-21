@@ -3,6 +3,12 @@
   let totalNumber = 0
   let totalMoney = 0
   const FEE_RATE = 0.0025
+  const DEFAULT_COLOR = '#777'
+  const INFO_COLOR = '#909399'
+  const SUCCESS_COLOR = '#5384ec'
+  const DANGER_COLOR = '#d85140'
+  const WARNING_COLOR = '#E6A23C'
+  const COUNT_DEFAULT_TEXT = "开始计时"
 
   addMainPanel();
   fixedLastPriceDom();
@@ -12,7 +18,8 @@
     checkBuyPrice();
     addEventToClosePanel();
     addEventToEditRemark();
-    computeSuggestPrice()
+    computeSuggestPrice();
+    addEventToCountTimeBox();
   }, 277);
 
   // 加遮罩面板
@@ -37,7 +44,13 @@
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
           <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:4px 0 0"><label>Total Number：<b id="totalNumberBox" style="margin-right: 24px"></b>Total Money：<b id="totalMoneyBox"></b></label></p>
-          <p style="margin:54px 0 0"><label><span>BuyPrice</span><input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/></label></p>
+          <p style="margin:54px 0 0">
+            <span>BuyPrice</span>
+            <div style="display: flex">
+              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/>
+              <span id="countTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+            </div>
+          </p>
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
@@ -89,7 +102,7 @@
       const offset = i > 0 ? Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000 : 0
       const criticalValue = i > 0 ? Math.min(historyList[i], historyList[i-1]) / 100 : 999999
       result += `
-        ${i > 0 ? `<span style="background-color: ${ Math.abs(offset) < criticalValue ? '#909399' : '#E6A23C'};margin: 0 7px; border-radius: 3px; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
+        ${i > 0 ? `<span style="background-color: ${ Math.abs(offset) < criticalValue ? INFO_COLOR : WARNING_COLOR};margin: 0 7px; border-radius: 3px; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
         ${i < historyList.length - 1 ? `<span>${historyList[i]}</span>` : ''}
       `
     }
@@ -160,9 +173,9 @@
   // 根据状态设置边框阴影颜色
   function setStatusColor(dom, status) {
     const colorGroup = {
-      success: '3px solid #409EFF',
-      warning: '3px solid #E6A23C',
-      danger: '3px solid #F56C6C',
+      success: `3px solid ${SUCCESS_COLOR}`,
+      warning: `3px solid ${WARNING_COLOR}`,
+      danger: `3px solid ${DANGER_COLOR}`,
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
@@ -238,8 +251,62 @@
       const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
       const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
       const offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ <b style="color:#5384ec">${offsetNumber}</b>` : `- <b style="color:#d85140">${Math.abs(offsetNumber)}</b>`} = ${buyedTotalNumber}` : ''
+      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber)}</b>`} = ${buyedTotalNumber}` : ''
     }, 1000);
+  }
+
+  // 绑定事件 计时器
+  function addEventToCountTimeBox() {
+    countTime(); // 检查是否默认开启
+    const countTimeBox = document.getElementById('countTimeBox')
+    countTimeBox.addEventListener('dblclick', () => {
+      if (countTimeBox.innerHTML === COUNT_DEFAULT_TEXT) {
+        countTime('new')
+      } else {
+        countTime('destroy')
+      }
+    })    
+  }
+
+  // 开启/关闭 计时器
+  const ONE_S = 1000
+  const ONE_M = 60 * ONE_S
+  const ONE_H = 60 * ONE_M
+  const WARNING_HOURS = 24
+  let countTimeInter
+  function countTime(type) {
+    const countTimeBox = document.getElementById('countTimeBox')
+    let startDemoTime = Number(localStorage.getItem('startDemoTime') || 0)
+    let durationTime = 0
+    if (type === 'new') {
+      startDemoTime = new Date().getTime()
+    } else if (type === 'destroy') {
+      startDemoTime = 0
+    }
+    if (startDemoTime) {
+      countTimeInter = setInterval(() => {
+        durationTime = new Date().getTime() - startDemoTime
+        countTimeBox.innerHTML = `<span style="color:${durationTime > WARNING_HOURS * ONE_H ? WARNING_COLOR : DEFAULT_COLOR}">${formatTime(durationTime)}</span>`
+      }, 1000);
+    } else {
+      countTimeInter && clearInterval(countTimeInter)
+      countTimeBox.innerHTML = COUNT_DEFAULT_TEXT
+    }
+    localStorage.setItem('startDemoTime', startDemoTime)
+  }
+
+  // 格式化时间格式
+  function formatTime(time) {
+    const all = []
+    const hs = Math.floor((time) / ONE_H)
+    const ms = Math.floor((time - hs * ONE_H) / ONE_M)
+    const ss = Math.floor((time - hs * ONE_H - ms * ONE_M) / ONE_S)
+
+    all.push(`0${hs}`.slice(-2))
+    all.push(`0${ms}`.slice(-2))
+    all.push(`0${ss}`.slice(-2))
+
+    return all.join(':')
   }
 
   // 朗读
