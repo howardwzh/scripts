@@ -9,6 +9,7 @@
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
+  let offsetNumber = 0
 
   addMainPanel();
   fixedLastPriceDom();
@@ -20,6 +21,9 @@
     addEventToEditRemark();
     computeSuggestPrice();
     addEventToCountTimeBox();
+    addEventToTotalIncrease();
+    addEventToTodayIncrease();
+    addEventToConfirmDoneBtn();
   }, 277);
 
   // 加遮罩面板
@@ -48,14 +52,19 @@
             <span>BuyPrice</span>
             <div style="display: flex">
               <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/>
+              <button id="confirmDoneBtn" style="white-space: nowrap; margin-left: 10px">完成</button>
               <span id="countTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
             </div>
           </p>
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
+          <p>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px" type="number" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px" type="number" /></span>
+          </p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
-          <textarea id="monitorEditRemark" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
+          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 289px; left: 50%; margin-left: -27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
@@ -179,7 +188,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`🙏🍀💰财富正义💰🍀🙏`);
+    showDebugMsg(`🙏🍀💰财富自由💰🍀🙏`);
   }
 
   // debug显示信息
@@ -200,22 +209,87 @@
   function addEventToEditRemark() {
     let isEditRemark = false;
     const monitorRemark = document.getElementById('monitorRemark');
-    const monitorEditRemark = document.getElementById('monitorEditRemark');
+    const monitorRemarkTextarea = document.getElementById('monitorRemarkTextarea');
     monitorRemark.innerText = localStorage.getItem('monitorRemark') || '备注';
 
     monitorRemark.addEventListener('dblclick', () => { 
       isEditRemark = !isEditRemark;
       if (isEditRemark) {
-        monitorEditRemark.style.display = 'block'
-        monitorEditRemark.value = monitorRemark.innerText;
+        monitorRemarkTextarea.style.display = 'block'
+        monitorRemarkTextarea.value = monitorRemark.innerText;
         monitorRemark.innerText = '编辑完成后双击保存';
       } else {
-        monitorEditRemark.style.display = 'none';
-        monitorRemark.innerText = monitorEditRemark.value || '备注';
+        monitorRemarkTextarea.style.display = 'none';
+        monitorRemark.innerText = monitorRemarkTextarea.value || '备注';
         localStorage.setItem('monitorRemark', monitorRemark.innerText);
       }
     })    
   }
+
+  // 监听 总计/今日 新增
+  function addEventToTotalIncrease() {
+    let isEditTotalIncrease = false;
+    const totalIncreaseBox = document.getElementById('totalIncreaseBox');
+    const totalIncrease = document.getElementById('totalIncrease');
+    const totalIncreaseInput = document.getElementById('totalIncreaseInput');
+    totalIncrease.innerText = localStorage.getItem('totalIncrease') || 0;
+
+    totalIncreaseBox.addEventListener('dblclick', () => { 
+      isEditTotalIncrease = !isEditTotalIncrease;
+      if (isEditTotalIncrease) {
+        totalIncrease.style.display = 'none'
+        totalIncreaseInput.style.display = 'inline-block'
+        totalIncreaseInput.value = totalIncrease.innerText;
+      } else {
+        totalIncrease.style.display = 'inline-block'
+        totalIncreaseInput.style.display = 'none';
+        totalIncrease.innerText = totalIncreaseInput.value || 0;
+        localStorage.setItem('totalIncrease', totalIncrease.innerText);
+      }
+    })    
+  }
+
+    // 监听 今日 新增
+    function addEventToTodayIncrease() {
+      let isEditTodayIncrease = false;
+      const todayIncreaseBox = document.getElementById('todayIncreaseBox');
+      const todayIncrease = document.getElementById('todayIncrease');
+      const todayIncreaseInput = document.getElementById('todayIncreaseInput');
+      todayIncrease.innerText = localStorage.getItem('todayIncrease') || '--';
+  
+      todayIncreaseBox.addEventListener('dblclick', () => { 
+        isEditTodayIncrease = !isEditTodayIncrease;
+        if (isEditTodayIncrease) {
+          todayIncrease.style.display = 'none'
+          todayIncreaseInput.style.display = 'inline-block'
+          todayIncreaseInput.value = todayIncrease.innerText;
+        } else {
+          todayIncrease.style.display = 'inline-block'
+          todayIncreaseInput.style.display = 'none';
+          todayIncrease.innerText = todayIncreaseInput.value || '--';
+          localStorage.setItem('todayIncrease', todayIncrease.innerText);
+        }
+      })    
+    }
+
+    // 监听 完成
+    function addEventToConfirmDoneBtn() {
+      const confirmDoneBtn = document.getElementById('confirmDoneBtn');
+      const totalIncrease = document.getElementById('totalIncrease');
+      const todayIncrease = document.getElementById('todayIncrease');
+      const buyPriceInput = document.getElementById('buyPriceInput')
+  
+      confirmDoneBtn.addEventListener('dblclick', () => {
+        if (!buyPriceInput.value) return
+        totalIncrease.innerText = (Number(totalIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
+        todayIncrease.innerText = (Number(todayIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
+        localStorage.setItem('totalIncrease', totalIncrease.innerText);
+        localStorage.setItem('todayIncrease', todayIncrease.innerText);
+        buyPriceInput.value = '';
+        localStorage.setItem('buyPriceInput', '');
+        countTime('destroy');
+      })    
+    }
 
   // 显示/隐藏监听面板
   function toggleShowPanel(showPanel) {
@@ -250,7 +324,7 @@
       suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
       const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
       const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
-      const offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
+      offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
       winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber)}</b>`} = ${buyedTotalNumber}` : ''
     }, 1000);
   }
