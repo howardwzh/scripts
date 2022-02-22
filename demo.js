@@ -58,11 +58,11 @@
           </p>
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
-          <p id="debugMsg"></p>
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px" type="text" /></span>
             <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px" type="text" /></span>
           </p>
+          <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
