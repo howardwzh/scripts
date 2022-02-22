@@ -52,7 +52,7 @@
             <span>BuyPrice</span>
             <div style="display: flex">
               <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/>
-              <button id="confirmDoneBtn" style="white-space: nowrap; margin-left: 10px">完成</button>
+              <button id="confirmDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
               <span id="countTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
             </div>
           </p>
