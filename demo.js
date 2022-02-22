@@ -60,8 +60,8 @@
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p id="debugMsg"></p>
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px" type="number" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px" type="number" /></span>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px" type="text" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px" type="text" /></span>
           </p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
@@ -252,10 +252,18 @@
     // 监听 今日 新增
     function addEventToTodayIncrease() {
       let isEditTodayIncrease = false;
+      const lastDate = localStorage.getItem('increaseLastDate');
+      const nowDate = `${new Date().getDate()}`;
       const todayIncreaseBox = document.getElementById('todayIncreaseBox');
       const todayIncrease = document.getElementById('todayIncrease');
       const todayIncreaseInput = document.getElementById('todayIncreaseInput');
-      todayIncrease.innerText = localStorage.getItem('todayIncrease') || '--';
+      if (nowDate !== lastDate) {
+        todayIncrease.innerText = 0
+        localStorage.setItem('todayIncrease', 0);
+        localStorage.setItem('increaseLastDate', nowDate);
+      } else {
+        todayIncrease.innerText = localStorage.getItem('todayIncrease') || '0';
+      }
   
       todayIncreaseBox.addEventListener('dblclick', () => { 
         isEditTodayIncrease = !isEditTodayIncrease;
@@ -266,7 +274,7 @@
         } else {
           todayIncrease.style.display = 'inline-block'
           todayIncreaseInput.style.display = 'none';
-          todayIncrease.innerText = todayIncreaseInput.value || '--';
+          todayIncrease.innerText = todayIncreaseInput.value || '0';
           localStorage.setItem('todayIncrease', todayIncrease.innerText);
         }
       })    
