@@ -3,7 +3,7 @@
   let totalNumber = 0
   let totalMoney = 0
   const FEE_RATE = 0.0025
-  const DEFAULT_COLOR = '#777'
+  const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
   const SUCCESS_COLOR = '#5384ec'
   const DANGER_COLOR = '#d85140'
@@ -240,7 +240,7 @@
       localStorage.setItem(increaseScope, 0);
       localStorage.setItem(`${increaseScope}LastDate`, nowDate);
     } else {
-      increase.innerText = localStorage.getItem(increaseScope) || '0';
+      increase.innerHTML = makeSuccessOrDangerHtml(localStorage.getItem(increaseScope) || '0');
     }
 
     increaseBox.addEventListener('dblclick', () => { 
@@ -252,7 +252,7 @@
       } else {
         increase.style.display = 'inline-block'
         increaseInput.style.display = 'none';
-        increase.innerText = increaseInput.value || '0';
+        increase.innerHTML = makeSuccessOrDangerHtml(increaseInput.value || '0');
         localStorage.setItem(increaseScope, increase.innerText);
       }
     })    
@@ -262,19 +262,30 @@
   function addEventToConfirmDoneBtn() {
     const confirmDoneBtn = document.getElementById('confirmDoneBtn');
     const totalIncrease = document.getElementById('totalIncrease');
+    const monthIncrease = document.getElementById('monthIncrease');
     const todayIncrease = document.getElementById('todayIncrease');
     const buyPriceInput = document.getElementById('buyPriceInput')
 
     confirmDoneBtn.addEventListener('dblclick', () => {
       if (!buyPriceInput.value) return
-      totalIncrease.innerText = (Number(totalIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
-      todayIncrease.innerText = (Number(todayIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
+      const totalIncreaseValue = Number(totalIncrease.innerText) + offsetNumber
+      const monthIncreaseValue = Number(monthIncrease.innerText) + offsetNumber
+      const todayIncreaseValue = Number(todayIncrease.innerText) + offsetNumber
+      totalIncrease.innerHTML = makeSuccessOrDangerHtml(totalIncreaseValue);
+      monthIncrease.innerHTML = makeSuccessOrDangerHtml(monthIncreaseValue);
+      todayIncrease.innerHTML = makeSuccessOrDangerHtml(todayIncreaseValue);
       localStorage.setItem('totalIncrease', totalIncrease.innerText);
+      localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
       buyPriceInput.value = '';
       localStorage.setItem('buyPriceInput', '');
       countTime('destroy');
     })    
+  }
+
+  // 根据value生成对应颜色的html
+  function makeSuccessOrDangerHtml(value) {
+    return `<b style="color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}">${Number(value).toFixed(4).slice(0, -1)}</b>`
   }
 
   // 显示/隐藏监听面板
