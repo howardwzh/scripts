@@ -150,7 +150,7 @@
   function checkSellPrice(sellPrice, lastPrice) {
     const [price, other=''] = sellPrice.split('*')
     const [number] = other.split("=")
-    const needCount = /=/.test(sellPrice)
+    const needCount = /^[^#].+=/.test(sellPrice)
     let result = sellPrice
     if (number && (needCount || lastPrice >= price)) {
       const lumpSum = (price*number*(1-FEE_RATE)).toFixed(4).slice(0, -1)
