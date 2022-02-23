@@ -21,8 +21,9 @@
     addEventToEditRemark();
     computeSuggestPrice();
     addEventToCountTimeBox();
-    addEventToTotalIncrease();
-    addEventToTodayIncrease();
+    addEventToIncrease('totalIncrease', 'saveForever')
+    addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
+    addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
     addEventToConfirmDoneBtn();
   }, 277);
 
@@ -59,8 +60,9 @@
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px" type="text" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px" type="text" /></span>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
+            <span id="monthIncreaseBox" style="display: inline-block; width: 120px">本月：<b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
           </p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
@@ -226,78 +228,54 @@
     })    
   }
 
-  // 监听 总计/今日 新增
-  function addEventToTotalIncrease() {
-    let isEditTotalIncrease = false;
-    const totalIncreaseBox = document.getElementById('totalIncreaseBox');
-    const totalIncrease = document.getElementById('totalIncrease');
-    const totalIncreaseInput = document.getElementById('totalIncreaseInput');
-    totalIncrease.innerText = localStorage.getItem('totalIncrease') || 0;
+  // 监听 总计/本月/今日 新增
+  function addEventToIncrease(increaseScope, nowDate) {
+    let isEditIncrease = false;
+    const lastDate = localStorage.getItem(`${increaseScope}LastDate`);
+    const increaseBox = document.getElementById(`${increaseScope}Box`);
+    const increase = document.getElementById(`${increaseScope}`);
+    const increaseInput = document.getElementById(`${increaseScope}Input`);
+    if (nowDate !== lastDate) {
+      increase.innerText = 0
+      localStorage.setItem(increaseScope, 0);
+      localStorage.setItem(`${increaseScope}LastDate`, nowDate);
+    } else {
+      increase.innerText = localStorage.getItem(increaseScope) || '0';
+    }
 
-    totalIncreaseBox.addEventListener('dblclick', () => { 
-      isEditTotalIncrease = !isEditTotalIncrease;
-      if (isEditTotalIncrease) {
-        totalIncrease.style.display = 'none'
-        totalIncreaseInput.style.display = 'inline-block'
-        totalIncreaseInput.value = totalIncrease.innerText;
+    increaseBox.addEventListener('dblclick', () => { 
+      isEditIncrease = !isEditIncrease;
+      if (isEditIncrease) {
+        increase.style.display = 'none'
+        increaseInput.style.display = 'inline-block'
+        increaseInput.value = increase.innerText;
       } else {
-        totalIncrease.style.display = 'inline-block'
-        totalIncreaseInput.style.display = 'none';
-        totalIncrease.innerText = totalIncreaseInput.value || 0;
-        localStorage.setItem('totalIncrease', totalIncrease.innerText);
+        increase.style.display = 'inline-block'
+        increaseInput.style.display = 'none';
+        increase.innerText = increaseInput.value || '0';
+        localStorage.setItem(increaseScope, increase.innerText);
       }
     })    
   }
 
-    // 监听 今日 新增
-    function addEventToTodayIncrease() {
-      let isEditTodayIncrease = false;
-      const lastDate = localStorage.getItem('increaseLastDate');
-      const nowDate = `${new Date().getDate()}`;
-      const todayIncreaseBox = document.getElementById('todayIncreaseBox');
-      const todayIncrease = document.getElementById('todayIncrease');
-      const todayIncreaseInput = document.getElementById('todayIncreaseInput');
-      if (nowDate !== lastDate) {
-        todayIncrease.innerText = 0
-        localStorage.setItem('todayIncrease', 0);
-        localStorage.setItem('increaseLastDate', nowDate);
-      } else {
-        todayIncrease.innerText = localStorage.getItem('todayIncrease') || '0';
-      }
-  
-      todayIncreaseBox.addEventListener('dblclick', () => { 
-        isEditTodayIncrease = !isEditTodayIncrease;
-        if (isEditTodayIncrease) {
-          todayIncrease.style.display = 'none'
-          todayIncreaseInput.style.display = 'inline-block'
-          todayIncreaseInput.value = todayIncrease.innerText;
-        } else {
-          todayIncrease.style.display = 'inline-block'
-          todayIncreaseInput.style.display = 'none';
-          todayIncrease.innerText = todayIncreaseInput.value || '0';
-          localStorage.setItem('todayIncrease', todayIncrease.innerText);
-        }
-      })    
-    }
+  // 监听 完成
+  function addEventToConfirmDoneBtn() {
+    const confirmDoneBtn = document.getElementById('confirmDoneBtn');
+    const totalIncrease = document.getElementById('totalIncrease');
+    const todayIncrease = document.getElementById('todayIncrease');
+    const buyPriceInput = document.getElementById('buyPriceInput')
 
-    // 监听 完成
-    function addEventToConfirmDoneBtn() {
-      const confirmDoneBtn = document.getElementById('confirmDoneBtn');
-      const totalIncrease = document.getElementById('totalIncrease');
-      const todayIncrease = document.getElementById('todayIncrease');
-      const buyPriceInput = document.getElementById('buyPriceInput')
-  
-      confirmDoneBtn.addEventListener('dblclick', () => {
-        if (!buyPriceInput.value) return
-        totalIncrease.innerText = (Number(totalIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
-        todayIncrease.innerText = (Number(todayIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
-        localStorage.setItem('totalIncrease', totalIncrease.innerText);
-        localStorage.setItem('todayIncrease', todayIncrease.innerText);
-        buyPriceInput.value = '';
-        localStorage.setItem('buyPriceInput', '');
-        countTime('destroy');
-      })    
-    }
+    confirmDoneBtn.addEventListener('dblclick', () => {
+      if (!buyPriceInput.value) return
+      totalIncrease.innerText = (Number(totalIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
+      todayIncrease.innerText = (Number(todayIncrease.innerText) + offsetNumber).toFixed(4).slice(0, -1);
+      localStorage.setItem('totalIncrease', totalIncrease.innerText);
+      localStorage.setItem('todayIncrease', todayIncrease.innerText);
+      buyPriceInput.value = '';
+      localStorage.setItem('buyPriceInput', '');
+      countTime('destroy');
+    })    
+  }
 
   // 显示/隐藏监听面板
   function toggleShowPanel(showPanel) {
