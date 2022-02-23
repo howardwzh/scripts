@@ -60,9 +60,9 @@
           <p style="margin:4px 0 0" id="winNumber"></p>
           <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 120px">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
-            <span id="monthIncreaseBox" style="display: inline-block; width: 120px">本月：<b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 120px">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 42px;font-size: 14px;" type="text" /></span>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 32%">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月：<b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 32%">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
           </p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
