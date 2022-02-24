@@ -7,6 +7,7 @@
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
+  const SUGGEST_NUMBER_GROUP = [0]
   const offsetNumber = {}
   const totalNumber = {}
   const totalMoney = {}
@@ -14,24 +15,26 @@
   addMainPanel();
   fixedLastPriceDom();
   setTimeout(() => {
+    // planA
+    checkBuyPrice('planA');
+    previewSellHighResult('planA');
+    previewResult('planA');
+    addEventToCountTimeBox('planA');
+    addEventToConfirmDoneBtn('planA');
+    // planB
+    checkBuyPrice('planB');
+    previewSellHighResult('planB');
+    previewResult('planB');
+    addEventToCountTimeBox('planB');
+    addEventToConfirmDoneBtn('planB');
     // global
     pushPriceToHistory();
+    checkAllSellPrices();
     addEventToClosePanel();
     addEventToEditRemark();
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
-    checkAllSellPrices();
-    // planA
-    checkBuyPrice('planA');
-    computeSuggestPrice('planA');
-    addEventToCountTimeBox('planA');
-    addEventToConfirmDoneBtn('planA');
-    // planB
-    checkBuyPrice('planB');
-    computeSuggestPrice('planB');
-    addEventToCountTimeBox('planB');
-    addEventToConfirmDoneBtn('planB');
   }, 277);
 
   // 加遮罩面板
@@ -56,22 +59,26 @@
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
           <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:16px 0 0">
-            <div style="text-align: left">planA<label style="margin-left: 12px; color: ${INFO_COLOR}"><b id="planATotalNumberBox"></b> | <b id="planATotalMoneyBox"></b><b id="planASuggestList" style="margin-left: 12px"></b></label></div>
+            <div style="text-align: left">planA<b id="planATotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planASuggestList" style="margin-left: 12px"></b></div>
             <div style="display: flex">
-              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
+              <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
+              <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planASellHighInput"/>
               <button id="planADoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
               <span id="planACountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
             </div>
             <p style="margin:4px 0 0" id="planAWinNumber"></p>
+            <p style="margin:4px 0 0" id="planASellHighResult"></p>
           </p>
           <p style="margin:16px 0 0">
-            <div style="text-align: left">planB<label style="margin-left: 12px; color: ${INFO_COLOR}"><b id="planBTotalNumberBox"></b> | <b id="planBTotalMoneyBox"></b><b id="planBSuggestList" style="margin-left: 12px"></b></label></div>
+            <div style="text-align: left">planB<b id="planBTotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planBSuggestList" style="margin-left: 12px"></b></div>
             <div style="display: flex">
-              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
+              <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
+              <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBSellHighInput"/>
               <button id="planBDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
               <span id="planBCountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
             </div>
             <p style="margin:4px 0 0" id="planBWinNumber"></p>
+            <p style="margin:4px 0 0" id="planBSellHighResult"></p>
           </p>
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
@@ -82,7 +89,7 @@
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 70px; right: 20px; margin-left: -27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 90px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -139,8 +146,9 @@
   function checkAllSellPrices() {
     const sellPriceInput = document.getElementById('sellPriceInput');
     sellPriceInput.value = localStorage.getItem('sellPriceInput');
-    setInterval(() => {
-      if (sellPriceInput === document.activeElement) return
+    sellPriceInput.addEventListener('change', handleSellListChange)
+    sellPriceInput.dispatchEvent(new Event('change'));
+    function handleSellListChange() {
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
       const sellPrices = sellPriceInput.value.split('\n')
       totalNumber['planA'] = 0
@@ -150,18 +158,20 @@
       for (let i = 0; i < sellPrices.length; i++) {
         sellPrices[i] = checkSellPrice(sellPrices[i], lastPrice)
       }
-      if(totalNumber['planA'] || totalNumber['planB']) {
+      if(totalMoney['planA'] || totalMoney['planB']) {
         setStatusColor(sellPriceInput, 'success');
       } else {
         setStatusColor(sellPriceInput, 'none');
       }
-      document.getElementById(`planATotalNumberBox`).innerText = totalNumber['planA'].toFixed(4).slice(0, -1)
-      document.getElementById(`planATotalMoneyBox`).innerText = totalMoney['planA'].toFixed(4).slice(0, -1)
-      document.getElementById(`planBTotalNumberBox`).innerText = totalNumber['planB'].toFixed(4).slice(0, -1)
-      document.getElementById(`planBTotalMoneyBox`).innerText = totalMoney['planB'].toFixed(4).slice(0, -1)
+      document.getElementById(`planATotalBox`).innerText = totalMoney['planA'] ? `${setNumberOfDigits(totalMoney['planA'])} | ${setNumberOfDigits(totalNumber['planA'])}` : ''
+      document.getElementById(`planBTotalBox`).innerText = totalMoney['planB'] ? `${setNumberOfDigits(totalMoney['planB'])} | ${setNumberOfDigits(totalNumber['planB'])}` : ''
       sellPriceInput.value = sellPrices.join('\n')
       localStorage.setItem('sellPriceInput', sellPriceInput.value);
-    }, 1000);
+      computeSuggestPrice('planA')
+      computeSuggestPrice('planB')
+      document.getElementById(`planAInput`).dispatchEvent(new Event('change'));
+      document.getElementById(`planBInput`).dispatchEvent(new Event('change'));
+    }
   };
 
   // 检查卖出价格
@@ -173,10 +183,10 @@
     const needCount = /=/.test(_sellPrice || _plan)
     let result = sellPrice
     if (number && plan && (needCount || lastPrice >= price)) {
-      const lumpSum = (price*number*(1-FEE_RATE)).toFixed(4).slice(0, -1)
+      const lumpSum = setNumberOfDigits(price*number*(1-FEE_RATE))
       totalNumber[plan] += Number(number)
       totalMoney[plan] += Number(lumpSum)
-      result = `${plan === 'planB' ? 'b#' : ''}${price}*${number}=${lumpSum} (Fee removed)`
+      result = `${plan === 'planB' ? 'b#' : ''}${price}*${number}=${lumpSum}`
     }
     return result
   };
@@ -305,7 +315,12 @@
 
   // 根据value生成对应颜色的html
   function makeSuccessOrDangerHtml(value) {
-    return `<b style="color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}">${Number(value).toFixed(4).slice(0, -1)}</b>`
+    return `<b style="color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(value)}</b>`
+  }
+
+  // 根据value生成对应颜色的html
+  function setNumberOfDigits(value, pos = 3) {
+    return Number(value).toFixed(pos+1).slice(0, -1)
   }
 
   // 显示/隐藏监听面板
@@ -321,29 +336,56 @@
     }
   }
 
-  // 价格建议
-  const WIN_NUMBER_GROUP = [0]
-  function computeSuggestPrice(plan) {
+  // 购买价格预计的结果
+  function previewResult(plan) {
     const winNumber = document.getElementById(`${plan}WinNumber`)
-    const suggestPriceListDom = document.getElementById(`${plan}SuggestList`)
-    setInterval(() => {
-      const buyPrice = Number(localStorage.getItem(`${plan}Input`)||0);
+    const buyPriceInput = document.getElementById(`${plan}Input`);
+    buyPriceInput.value = Number(localStorage.getItem(`${plan}Input`)||0);
+    
+    buyPriceInput.addEventListener('change', () => {
       if (!totalNumber[plan] || !totalMoney[plan]) {
-        suggestPriceListDom.innerHTML = ''
         winNumber.innerHTML = ''
         return
       }
-      const suggestPriceList = []
-      for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
-        const price = (totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
-        suggestPriceList.push(`${price}${WIN_NUMBER_GROUP[i] !== 0 ? `(+${WIN_NUMBER_GROUP[i]})` : ''}`)
+      const buyPrice = buyPriceInput.value
+      const buyedTotalNumber = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
+      const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
+      offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber-totalNumber[plan]-fee))
+      winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
+      document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
+    })
+  }
+
+  // 高价格卖再回购当前低价格买的预计结果
+  function previewSellHighResult(plan) {
+    const sellHighInput = document.getElementById(`${plan}SellHighInput`)
+    const planBSellHighResult = document.getElementById(`${plan}SellHighResult`);
+    const buyPriceInput = document.getElementById(`${plan}Input`);
+    
+    sellHighInput.addEventListener('change', () => {
+      const sellHightPrice = Number(sellHighInput.value || 0)
+      if (sellHightPrice) {
+        const sellHighTotalMoney = Number(setNumberOfDigits(sellHightPrice * (totalNumber[plan] + offsetNumber[plan]) * (1-FEE_RATE)))
+        planBSellHighResult.innerHTML = `${totalMoney[plan]} ${sellHighTotalMoney > totalMoney[plan] ? '+' : '-'} <b style="color: ${sellHighTotalMoney > totalMoney[plan] ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan]))}(${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan])*(1-FEE_RATE)/Number(buyPriceInput.value))}HC)</b> = ${sellHighTotalMoney}`
+      } else {
+        planBSellHighResult.innerHTML  = ''
       }
-      suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
-      const buyedTotalNumber = Number((totalMoney[plan]/buyPrice).toFixed(4).slice(0, -1))
-      const fee = Number((totalMoney[plan]*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
-      offsetNumber[plan] = Number((buyedTotalNumber-totalNumber[plan]-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
-    }, 1000);
+    })
+  }
+
+  // 价格建议
+  function computeSuggestPrice(plan) {
+    const suggestPriceListDom = document.getElementById(`${plan}SuggestList`)
+    if (!totalNumber[plan] || !totalMoney[plan]) {
+      suggestPriceListDom.innerHTML = ''
+      return
+    }
+    const suggestPriceList = []
+    for(let i = 0; i < SUGGEST_NUMBER_GROUP.length; i++) {
+      const price = setNumberOfDigits(totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]+SUGGEST_NUMBER_GROUP[i]))
+      suggestPriceList.push(`${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(+${SUGGEST_NUMBER_GROUP[i]})` : ''}`)
+    }
+    suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
   }
 
   // 绑定事件 计时器
