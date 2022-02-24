@@ -1,7 +1,5 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
-  let totalNumber = 0
-  let totalMoney = 0
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -9,22 +7,31 @@
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
-  let offsetNumber = 0
+  const offsetNumber = {}
+  const totalNumber = {}
+  const totalMoney = {}
 
   addMainPanel();
   fixedLastPriceDom();
   setTimeout(() => {
+    // global
     pushPriceToHistory();
-    checkAllSellPrices();
-    checkBuyPrice();
     addEventToClosePanel();
     addEventToEditRemark();
-    computeSuggestPrice();
-    addEventToCountTimeBox();
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
-    addEventToConfirmDoneBtn();
+    checkAllSellPrices();
+    // planA
+    checkBuyPrice('planA');
+    computeSuggestPrice('planA');
+    addEventToCountTimeBox('planA');
+    addEventToConfirmDoneBtn('planA');
+    // planB
+    checkBuyPrice('planB');
+    computeSuggestPrice('planB');
+    addEventToCountTimeBox('planB');
+    addEventToConfirmDoneBtn('planB');
   }, 277);
 
   // 加遮罩面板
@@ -47,18 +54,25 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
-          <p style="margin:16px 0 0"><label><span>SellPrices</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
-          <p style="margin:4px 0 0"><label>Total Number：<b id="totalNumberBox" style="margin-right: 24px"></b>Total Money：<b id="totalMoneyBox"></b></label></p>
-          <p style="margin:54px 0 0">
-            <span>BuyPrice</span>
+          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0">
+            <div style="text-align: left">planA<label style="margin-left: 12px; color: ${INFO_COLOR}"><b id="planATotalNumberBox"></b> | <b id="planATotalMoneyBox"></b><b id="planASuggestList" style="margin-left: 12px"></b></label></div>
             <div style="display: flex">
-              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="buyPriceInput"/>
-              <button id="confirmDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
-              <span id="countTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
+              <button id="planADoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
+              <span id="planACountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
             </div>
+            <p style="margin:4px 0 0" id="planAWinNumber"></p>
           </p>
-          <p style="margin:4px 0 0" id="winNumber"></p>
-          <p id="suggestPriceListDom" style="word-break: break-all;text-align: left;"></p>
+          <p style="margin:16px 0 0">
+            <div style="text-align: left">planB<label style="margin-left: 12px; color: ${INFO_COLOR}"><b id="planBTotalNumberBox"></b> | <b id="planBTotalMoneyBox"></b><b id="planBSuggestList" style="margin-left: 12px"></b></label></div>
+            <div style="display: flex">
+              <input style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
+              <button id="planBDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
+              <span id="planBCountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+            </div>
+            <p style="margin:4px 0 0" id="planBWinNumber"></p>
+          </p>
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
             <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月：<b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
@@ -68,7 +82,7 @@
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 289px; left: 50%; margin-left: -27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 70px; right: 20px; margin-left: -27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -101,7 +115,7 @@
         historyList = historyList.slice(-10);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
-        speakHelper.speak(lastPrice)
+        // speakHelper.speak(lastPrice)
       }
     }, 1000);
   };
@@ -129,18 +143,22 @@
       if (sellPriceInput === document.activeElement) return
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
       const sellPrices = sellPriceInput.value.split('\n')
-      totalNumber = 0
-      totalMoney = 0
+      totalNumber['planA'] = 0
+      totalMoney['planA'] = 0
+      totalNumber['planB'] = 0
+      totalMoney['planB'] = 0
       for (let i = 0; i < sellPrices.length; i++) {
         sellPrices[i] = checkSellPrice(sellPrices[i], lastPrice)
       }
-      if(totalNumber) {
+      if(totalNumber['planA'] || totalNumber['planB']) {
         setStatusColor(sellPriceInput, 'success');
       } else {
         setStatusColor(sellPriceInput, 'none');
       }
-      document.getElementById('totalNumberBox').innerText = totalNumber.toFixed(4).slice(0, -1)
-      document.getElementById('totalMoneyBox').innerText = totalMoney.toFixed(4).slice(0, -1)
+      document.getElementById(`planATotalNumberBox`).innerText = totalNumber['planA'].toFixed(4).slice(0, -1)
+      document.getElementById(`planATotalMoneyBox`).innerText = totalMoney['planA'].toFixed(4).slice(0, -1)
+      document.getElementById(`planBTotalNumberBox`).innerText = totalNumber['planB'].toFixed(4).slice(0, -1)
+      document.getElementById(`planBTotalMoneyBox`).innerText = totalMoney['planB'].toFixed(4).slice(0, -1)
       sellPriceInput.value = sellPrices.join('\n')
       localStorage.setItem('sellPriceInput', sellPriceInput.value);
     }, 1000);
@@ -148,28 +166,30 @@
 
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
-    const [price, other=''] = sellPrice.split('*')
+    const [_plan, _sellPrice] = sellPrice.split('#')
+    const plan = _plan && (_plan === 'b' ? 'planB' : 'planA')
+    const [price, other=''] = (_sellPrice || _plan).split('*')
     const [number] = other.split("=")
-    const needCount = /^[^#].+=/.test(sellPrice)
+    const needCount = /=/.test(_sellPrice || _plan)
     let result = sellPrice
-    if (number && (needCount || lastPrice >= price)) {
+    if (number && plan && (needCount || lastPrice >= price)) {
       const lumpSum = (price*number*(1-FEE_RATE)).toFixed(4).slice(0, -1)
-      totalNumber += Number(number)
-      totalMoney += Number(lumpSum)
-      result = `${price}*${number}=${lumpSum} (Fee removed)`
+      totalNumber[plan] += Number(number)
+      totalMoney[plan] += Number(lumpSum)
+      result = `${plan === 'planB' ? 'b#' : ''}${price}*${number}=${lumpSum} (Fee removed)`
     }
     return result
   };
 
   // 检查买入价格
-  function checkBuyPrice() {
+  function checkBuyPrice(plan) {
     const lastPriceDom = document.getElementById('_spanLastPrice');
-    const buyPriceInput = document.getElementById('buyPriceInput');
-    buyPriceInput.value = localStorage.getItem('buyPriceInput');
+    const buyPriceInput = document.getElementById(`${plan}Input`);
+    buyPriceInput.value = localStorage.getItem(`${plan}Input`);
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText);
       const buyPrice = Number(buyPriceInput.value||0);
-      localStorage.setItem('buyPriceInput', buyPrice || '');
+      localStorage.setItem(`${plan}Input`, buyPrice || '');
       
       if(!buyPrice || lastPrice > buyPrice) {
         setStatusColor(buyPriceInput, 'none');
@@ -259,18 +279,18 @@
   }
 
   // 监听 完成
-  function addEventToConfirmDoneBtn() {
-    const confirmDoneBtn = document.getElementById('confirmDoneBtn');
+  function addEventToConfirmDoneBtn(plan) {
+    const confirmDoneBtn = document.getElementById(`${plan}DoneBtn`);
+    const buyPriceInput = document.getElementById(`${plan}Input`)
     const totalIncrease = document.getElementById('totalIncrease');
     const monthIncrease = document.getElementById('monthIncrease');
     const todayIncrease = document.getElementById('todayIncrease');
-    const buyPriceInput = document.getElementById('buyPriceInput')
 
     confirmDoneBtn.addEventListener('dblclick', () => {
       if (!buyPriceInput.value) return
-      const totalIncreaseValue = Number(totalIncrease.innerText) + offsetNumber
-      const monthIncreaseValue = Number(monthIncrease.innerText) + offsetNumber
-      const todayIncreaseValue = Number(todayIncrease.innerText) + offsetNumber
+      const totalIncreaseValue = Number(totalIncrease.innerText) + offsetNumber[plan]
+      const monthIncreaseValue = Number(monthIncrease.innerText) + offsetNumber[plan]
+      const todayIncreaseValue = Number(todayIncrease.innerText) + offsetNumber[plan]
       totalIncrease.innerHTML = makeSuccessOrDangerHtml(totalIncreaseValue);
       monthIncrease.innerHTML = makeSuccessOrDangerHtml(monthIncreaseValue);
       todayIncrease.innerHTML = makeSuccessOrDangerHtml(todayIncreaseValue);
@@ -278,8 +298,8 @@
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
       buyPriceInput.value = '';
-      localStorage.setItem('buyPriceInput', '');
-      countTime('destroy');
+      localStorage.setItem(`${plan}Input`, '');
+      countTime(plan, 'destroy');
     })    
   }
 
@@ -302,39 +322,39 @@
   }
 
   // 价格建议
-  const WIN_NUMBER_GROUP = [1,10,50,100]
-  function computeSuggestPrice() {
-    const winNumber = document.getElementById('winNumber')
-    const suggestPriceListDom = document.getElementById('suggestPriceListDom')
+  const WIN_NUMBER_GROUP = [0]
+  function computeSuggestPrice(plan) {
+    const winNumber = document.getElementById(`${plan}WinNumber`)
+    const suggestPriceListDom = document.getElementById(`${plan}SuggestList`)
     setInterval(() => {
-      const buyPrice = Number(localStorage.getItem('buyPriceInput')||0);
-      if (!totalNumber || !totalMoney) {
+      const buyPrice = Number(localStorage.getItem(`${plan}Input`)||0);
+      if (!totalNumber[plan] || !totalMoney[plan]) {
         suggestPriceListDom.innerHTML = ''
         winNumber.innerHTML = ''
         return
       }
       const suggestPriceList = []
       for(let i = 0; i < WIN_NUMBER_GROUP.length; i++) {
-        const price = (totalMoney*(1-FEE_RATE)/(totalNumber+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
-        suggestPriceList.push(`${price}(+${WIN_NUMBER_GROUP[i]})`)
+        const price = (totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]+WIN_NUMBER_GROUP[i])).toFixed(4).slice(0, -1)
+        suggestPriceList.push(`${price}${WIN_NUMBER_GROUP[i] !== 0 ? `(+${WIN_NUMBER_GROUP[i]})` : ''}`)
       }
       suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
-      const buyedTotalNumber = Number((totalMoney/buyPrice).toFixed(4).slice(0, -1))
-      const fee = Number((totalMoney*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
-      offsetNumber = Number((buyedTotalNumber-totalNumber-fee).toFixed(4).slice(0, -1))
-      winNumber.innerHTML = buyPrice ? `${totalNumber} + ${fee}(fee) ${offsetNumber > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber)}</b>`} = ${buyedTotalNumber}` : ''
+      const buyedTotalNumber = Number((totalMoney[plan]/buyPrice).toFixed(4).slice(0, -1))
+      const fee = Number((totalMoney[plan]*FEE_RATE/buyPrice).toFixed(4).slice(0, -1))
+      offsetNumber[plan] = Number((buyedTotalNumber-totalNumber[plan]-fee).toFixed(4).slice(0, -1))
+      winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
     }, 1000);
   }
 
   // 绑定事件 计时器
-  function addEventToCountTimeBox() {
-    countTime(); // 检查是否默认开启
-    const countTimeBox = document.getElementById('countTimeBox')
+  function addEventToCountTimeBox(plan) {
+    countTime(plan); // 检查是否默认开启
+    const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
     countTimeBox.addEventListener('dblclick', () => {
       if (countTimeBox.innerHTML === COUNT_DEFAULT_TEXT) {
-        countTime('new')
+        countTime(plan, 'new')
       } else {
-        countTime('destroy')
+        countTime(plan, 'destroy')
       }
     })    
   }
@@ -344,10 +364,10 @@
   const ONE_M = 60 * ONE_S
   const ONE_H = 60 * ONE_M
   const WARNING_HOURS = 24
-  let countTimeInter
-  function countTime(type) {
-    const countTimeBox = document.getElementById('countTimeBox')
-    let startDemoTime = Number(localStorage.getItem('startDemoTime') || 0)
+  let countTimeInters = {}
+  function countTime(plan, type) {
+    const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
+    let startDemoTime = Number(localStorage.getItem(`${plan}StartTime`) || 0)
     let durationTime = 0
     if (type === 'new') {
       startDemoTime = new Date().getTime()
@@ -355,15 +375,15 @@
       startDemoTime = 0
     }
     if (startDemoTime) {
-      countTimeInter = setInterval(() => {
+      countTimeInters[plan] = setInterval(() => {
         durationTime = new Date().getTime() - startDemoTime
         countTimeBox.innerHTML = `<span style="color:${durationTime > WARNING_HOURS * ONE_H ? WARNING_COLOR : DEFAULT_COLOR}">${formatTime(durationTime)}</span>`
       }, 1000);
     } else {
-      countTimeInter && clearInterval(countTimeInter)
+      countTimeInters[plan] && clearInterval(countTimeInters[plan])
       countTimeBox.innerHTML = COUNT_DEFAULT_TEXT
     }
-    localStorage.setItem('startDemoTime', startDemoTime)
+    localStorage.setItem(`${plan}StartTime`, startDemoTime)
   }
 
   // 格式化时间格式
