@@ -340,18 +340,18 @@
   function previewResult(plan) {
     const winNumber = document.getElementById(`${plan}WinNumber`)
     const buyPriceInput = document.getElementById(`${plan}Input`);
-    buyPriceInput.value = Number(localStorage.getItem(`${plan}Input`)||0);
+    buyPriceInput.value = localStorage.getItem(`${plan}Input`) || '';
     
     buyPriceInput.addEventListener('change', () => {
-      if (!totalNumber[plan] || !totalMoney[plan]) {
+      if (!totalMoney[plan] || !buyPriceInput.value) {
         winNumber.innerHTML = ''
-        return
+      } else {
+        const buyPrice = buyPriceInput.value
+        const buyedTotalNumber = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
+        const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
+        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber-totalNumber[plan]-fee))
+        winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
       }
-      const buyPrice = buyPriceInput.value
-      const buyedTotalNumber = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
-      const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
-      offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber-totalNumber[plan]-fee))
-      winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
   }
@@ -361,15 +361,17 @@
     const sellHighInput = document.getElementById(`${plan}SellHighInput`)
     const planBSellHighResult = document.getElementById(`${plan}SellHighResult`);
     const buyPriceInput = document.getElementById(`${plan}Input`);
+    sellHighInput.value = localStorage.getItem(`${plan}SellHighInput`) || '';
     
     sellHighInput.addEventListener('change', () => {
-      const sellHightPrice = Number(sellHighInput.value || 0)
-      if (sellHightPrice) {
+      const sellHightPrice = Number(sellHighInput.value)
+      if (!totalMoney[plan] || !buyPriceInput.value || !sellHightPrice) {
+        planBSellHighResult.innerHTML  = ''
+      } else {
         const sellHighTotalMoney = Number(setNumberOfDigits(sellHightPrice * (totalNumber[plan] + offsetNumber[plan]) * (1-FEE_RATE)))
         planBSellHighResult.innerHTML = `${totalMoney[plan]} ${sellHighTotalMoney > totalMoney[plan] ? '+' : '-'} <b style="color: ${sellHighTotalMoney > totalMoney[plan] ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan]))}(${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan])*(1-FEE_RATE)/Number(buyPriceInput.value))}HC)</b> = ${sellHighTotalMoney}`
-      } else {
-        planBSellHighResult.innerHTML  = ''
       }
+      localStorage.setItem(`${plan}SellHighInput`,sellHighInput.value);
     })
   }
 
