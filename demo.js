@@ -118,7 +118,7 @@
     let totalDays = Number(localStorage.getItem('demoTotalDays') || 3)
     if (lastDate) {
       totalDays += Number(nowDate) - Number(lastDate)
-      localStorage.setItem('totalDaysBox', totalDays);
+      localStorage.setItem('demoTotalDays', totalDays);
     }
     totalDaysBox.innerText = totalDays
   }
