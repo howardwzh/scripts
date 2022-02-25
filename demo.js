@@ -305,7 +305,7 @@
   // 监听 完成
   function addEventToConfirmDoneBtn(plan) {
     const confirmDoneBtn = document.getElementById(`${plan}DoneBtn`);
-    const buyPriceInput = document.getElementById(`${plan}Input`)
+    const buyPriceInput = document.getElementById(`${plan}Input`);
     const totalIncrease = document.getElementById('totalIncrease');
     const monthIncrease = document.getElementById('monthIncrease');
     const todayIncrease = document.getElementById('todayIncrease');
@@ -321,8 +321,9 @@
       localStorage.setItem('totalIncrease', totalIncrease.innerText);
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
-      buyPriceInput.value = '';
       localStorage.setItem(`${plan}Input`, '');
+      buyPriceInput.value = '';
+      document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
       countTime(plan, 'destroy');
     })    
   }
