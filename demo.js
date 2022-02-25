@@ -64,22 +64,22 @@
             <div style="display: flex">
               <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
               <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planASellHighInput"/>
-              <button id="planADoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
               <span id="planACountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+              <button id="planADoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
             </div>
-            <p style="margin:4px 0 0" id="planAWinNumber"></p>
-            <p style="margin:4px 0 0" id="planASellHighResult"></p>
+            <p style="margin:4px 0 0;text-align: left" id="planAWinNumber"></p>
+            <p style="margin:4px 0 0;text-align: left" id="planASellHighResult"></p>
           </p>
           <p style="margin:16px 0 0">
             <div style="text-align: left">planB<b id="planBTotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planBSuggestList" style="margin-left: 12px"></b></div>
             <div style="display: flex">
               <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
               <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBSellHighInput"/>
-              <button id="planBDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
               <span id="planBCountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+              <button id="planBDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
             </div>
-            <p style="margin:4px 0 0" id="planBWinNumber"></p>
-            <p style="margin:4px 0 0" id="planBSellHighResult"></p>
+            <p style="margin:4px 0 0;text-align: left" id="planBWinNumber"></p>
+            <p style="margin:4px 0 0;text-align: left" id="planBSellHighResult"></p>
           </p>
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalDaysBox"></span>日: <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
