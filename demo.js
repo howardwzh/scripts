@@ -115,7 +115,7 @@
     const totalDaysBox = document.getElementById('totalDaysBox')
     const nowDate = `${new Date().getDate()}`
     const lastDate = localStorage.getItem(`todayIncreaseLastDate`);
-    let totalDays = Number(localStorage.getItem('demoTotalDays') || 3)
+    let totalDays = Number(localStorage.getItem('demoTotalDays') || 1)
     if (lastDate) {
       totalDays += Number(nowDate) - Number(lastDate)
       localStorage.setItem('demoTotalDays', totalDays);
