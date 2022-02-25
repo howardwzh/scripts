@@ -28,13 +28,14 @@
     addEventToCountTimeBox('planB');
     addEventToConfirmDoneBtn('planB');
     // global
+    setTotalDays();
     pushPriceToHistory();
     checkAllSellPrices();
     addEventToClosePanel();
     addEventToEditRemark();
     addEventToIncrease('totalIncrease', 'saveForever')
-    addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
+    addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
   }, 277);
 
   // 加遮罩面板
@@ -81,9 +82,9 @@
             <p style="margin:4px 0 0" id="planBSellHighResult"></p>
           </p>
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 32%">总计：<b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月：<b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 32%">今日：<b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalDaysBox"></span>日: <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月: <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 32%">今日: <b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
           </p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
@@ -108,6 +109,19 @@
       border-radius: 3px;
     `);
   };
+
+  // 设置总天数
+  function setTotalDays() {
+    const totalDaysBox = document.getElementById('totalDaysBox')
+    const nowDate = `${new Date().getDate()}`
+    const lastDate = localStorage.getItem(`todayIncreaseLastDate`);
+    let totalDays = Number(localStorage.getItem('demoTotalDays') || 3)
+    if (lastDate) {
+      totalDays += Number(nowDate) - Number(lastDate)
+      localStorage.setItem('totalDaysBox', totalDays);
+    }
+    totalDaysBox.innerText = totalDays
+  }
 
   // 不同价格历史记录
   function pushPriceToHistory() {
