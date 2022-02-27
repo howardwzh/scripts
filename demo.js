@@ -7,7 +7,7 @@
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
-  const SUGGEST_NUMBER_GROUP = [0]
+  const SUGGEST_NUMBER_GROUP = [0, -20]
   const offsetNumber = {}
   const totalNumber = {}
   const totalMoney = {}
@@ -60,7 +60,7 @@
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
           <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
           <p style="margin:16px 0 0">
-            <div style="text-align: left">planA<b id="planATotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planASuggestList" style="margin-left: 12px"></b></div>
+            <div style="text-align: left">A<b id="planATotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planASuggestList" style="margin-left: 12px"></b></div>
             <div style="display: flex">
               <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
               <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planASellHighInput"/>
@@ -71,7 +71,7 @@
             <p style="margin:4px 0 0;text-align: left" id="planASellHighResult"></p>
           </p>
           <p style="margin:16px 0 0">
-            <div style="text-align: left">planB<b id="planBTotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planBSuggestList" style="margin-left: 12px"></b></div>
+            <div style="text-align: left">B<b id="planBTotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planBSuggestList" style="margin-left: 12px"></b></div>
             <div style="display: flex">
               <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
               <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBSellHighInput"/>
@@ -177,8 +177,8 @@
       } else {
         setStatusColor(sellPriceInput, 'none');
       }
-      document.getElementById(`planATotalBox`).innerText = totalMoney['planA'] ? `${setNumberOfDigits(totalMoney['planA'])} | ${setNumberOfDigits(totalNumber['planA'])}` : ''
-      document.getElementById(`planBTotalBox`).innerText = totalMoney['planB'] ? `${setNumberOfDigits(totalMoney['planB'])} | ${setNumberOfDigits(totalNumber['planB'])}` : ''
+      document.getElementById(`planATotalBox`).innerText = totalMoney['planA'] ? `${setNumberOfDigits(totalMoney['planA'])} | ${totalNumber['planA']}` : ''
+      document.getElementById(`planBTotalBox`).innerText = totalMoney['planB'] ? `${setNumberOfDigits(totalMoney['planB'])} | ${totalNumber['planB']}` : ''
       sellPriceInput.value = sellPrices.join('\n')
       localStorage.setItem('sellPriceInput', sellPriceInput.value);
       computeSuggestPrice('planA')
@@ -191,7 +191,7 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     const [_plan, _sellPrice] = sellPrice.split('#')
-    const plan = _plan && (_plan === 'b' ? 'planB' : 'planA')
+    const plan = _plan && (/^(b|B)$/.test(_plan) ? 'planB' : 'planA')
     const [price, other=''] = (_sellPrice || _plan).split('*')
     const [number] = other.split("=")
     const needCount = /=/.test(_sellPrice || _plan)
@@ -365,7 +365,7 @@
         const buyedTotalNumber = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
         const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
         offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber-totalNumber[plan]-fee))
-        winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
+        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
@@ -400,7 +400,7 @@
     const suggestPriceList = []
     for(let i = 0; i < SUGGEST_NUMBER_GROUP.length; i++) {
       const price = setNumberOfDigits(totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]+SUGGEST_NUMBER_GROUP[i]))
-      suggestPriceList.push(`${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(+${SUGGEST_NUMBER_GROUP[i]})` : ''}`)
+      suggestPriceList.push(`<b style="color: ${SUGGEST_NUMBER_GROUP[i] < 0 ? WARNING_COLOR : DEFAULT_COLOR}">${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(${SUGGEST_NUMBER_GROUP[i] > 0 ? '+' : ''}${SUGGEST_NUMBER_GROUP[i]})` : ''}</b>`)
     }
     suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
   }
