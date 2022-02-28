@@ -7,7 +7,7 @@
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
-  const SUGGEST_NUMBER_GROUP = [0, -20]
+  const SUGGEST_NUMBER_GROUP = [0, -0.04] // -4%
   const offsetNumber = {}
   const totalNumber = {}
   const totalMoney = {}
@@ -200,7 +200,7 @@
       const lumpSum = setNumberOfDigits(price*number*(1-FEE_RATE))
       totalNumber[plan] += Number(number)
       totalMoney[plan] += Number(lumpSum)
-      result = `${plan === 'planB' ? 'b#' : ''}${price}*${number}=${lumpSum}`
+      result = `${plan === 'planB' ? 'B#' : ''}${price}*${number}=${lumpSum}`
     }
     return result
   };
@@ -399,8 +399,8 @@
     }
     const suggestPriceList = []
     for(let i = 0; i < SUGGEST_NUMBER_GROUP.length; i++) {
-      const price = setNumberOfDigits(totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]+SUGGEST_NUMBER_GROUP[i]))
-      suggestPriceList.push(`<b style="color: ${SUGGEST_NUMBER_GROUP[i] < 0 ? WARNING_COLOR : DEFAULT_COLOR}">${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(${SUGGEST_NUMBER_GROUP[i] > 0 ? '+' : ''}${SUGGEST_NUMBER_GROUP[i]})` : ''}</b>`)
+      const price = setNumberOfDigits(totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]*(1+SUGGEST_NUMBER_GROUP[i])))
+      suggestPriceList.push(`<b style="color: ${SUGGEST_NUMBER_GROUP[i] < 0 ? WARNING_COLOR : DEFAULT_COLOR}">${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(${SUGGEST_NUMBER_GROUP[i] > 0 ? '+' : ''}${Math.floor(totalNumber[plan]*SUGGEST_NUMBER_GROUP[i])})` : ''}</b>`)
     }
     suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
   }
