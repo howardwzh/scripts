@@ -134,7 +134,7 @@
       const lastPrice = lastPriceDom.innerText;
       if (lastPrice !== historyList[historyList.length - 1]) {
         historyList.push(lastPrice);
-        historyList = historyList.slice(-10);
+        historyList = historyList.slice(-7);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
         // speakHelper.speak(lastPrice)
