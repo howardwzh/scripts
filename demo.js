@@ -1,5 +1,6 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
+  const FIRST_DATE_TIME = new Date('2022/2/23').getTime() // Starting time
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -117,7 +118,7 @@
   // 设置总天数
   function setTotalDays() {
     const totalDaysBox = document.getElementById('totalDaysBox')
-    const firstTime = Number(localStorage.getItem(`increaseFirstTime`) || new Date('2022/2/23').getTime());
+    const firstTime = Number(localStorage.getItem(`increaseFirstTime`) || new Date(new Date().toLocaleDateString()).getTime());
     const nowTime = new Date().getTime()
     totalDaysBox.innerText = Math.ceil((nowTime-firstTime)/ONE_D)
     localStorage.setItem(`increaseFirstTime`, firstTime)
