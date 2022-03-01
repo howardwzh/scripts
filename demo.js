@@ -13,6 +13,7 @@
   const ONE_M = 60 * ONE_S
   const ONE_H = 60 * ONE_M
   const ONE_D = 24 * ONE_H
+  const HISTORY_LENGTH = 7 // 7 price histories
   const offsetNumber = {}
   const totalNumber = {}
   const totalMoney = {}
@@ -134,7 +135,7 @@
       const lastPrice = lastPriceDom.innerText;
       if (lastPrice !== historyList[historyList.length - 1]) {
         historyList.push(lastPrice);
-        historyList = historyList.slice(-7);
+        historyList = historyList.slice(-1 * HISTORY_LENGTH);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
         localStorage.setItem('monitorHistory', JSON.stringify(historyList));
         // speakHelper.speak(lastPrice)
