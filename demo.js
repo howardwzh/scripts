@@ -8,6 +8,10 @@
   const WARNING_COLOR = '#E6A23C'
   const COUNT_DEFAULT_TEXT = "开始计时"
   const SUGGEST_NUMBER_GROUP = [0, -0.04] // -4%
+  const ONE_S = 1000
+  const ONE_M = 60 * ONE_S
+  const ONE_H = 60 * ONE_M
+  const ONE_D = 24 * ONE_H
   const offsetNumber = {}
   const totalNumber = {}
   const totalMoney = {}
@@ -113,14 +117,10 @@
   // 设置总天数
   function setTotalDays() {
     const totalDaysBox = document.getElementById('totalDaysBox')
-    const nowDate = `${new Date().getDate()}`
-    const lastDate = localStorage.getItem(`todayIncreaseLastDate`);
-    let totalDays = Number(localStorage.getItem('demoTotalDays') || 1)
-    if (lastDate) {
-      totalDays += Number(nowDate) - Number(lastDate)
-      localStorage.setItem('demoTotalDays', totalDays);
-    }
-    totalDaysBox.innerText = totalDays
+    const firstTime = Number(localStorage.getItem(`increaseFirstTime`) || new Date('2022/2/23').getTime());
+    const nowTime = new Date().getTime()
+    totalDaysBox.innerText = Math.ceil((nowTime-firstTime)/ONE_D)
+    localStorage.setItem(`increaseFirstTime`, firstTime)
   }
 
   // 不同价格历史记录
@@ -419,10 +419,6 @@
   }
 
   // 开启/关闭 计时器
-  const ONE_S = 1000
-  const ONE_M = 60 * ONE_S
-  const ONE_H = 60 * ONE_M
-  const WARNING_HOURS = 24
   let countTimeInters = {}
   function countTime(plan, type) {
     const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
@@ -436,7 +432,7 @@
     if (startDemoTime) {
       countTimeInters[plan] = setInterval(() => {
         durationTime = new Date().getTime() - startDemoTime
-        countTimeBox.innerHTML = `<span style="color:${durationTime > WARNING_HOURS * ONE_H ? WARNING_COLOR : DEFAULT_COLOR}">${formatTime(durationTime)}</span>`
+        countTimeBox.innerHTML = `<span style="color:${durationTime > ONE_D ? WARNING_COLOR : DEFAULT_COLOR}">${formatTime(durationTime)}</span>`
       }, 1000);
     } else {
       countTimeInters[plan] && clearInterval(countTimeInters[plan])
