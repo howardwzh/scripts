@@ -192,18 +192,18 @@
 
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
-    const [_plan, _sellPrice] = sellPrice.split('#')
-    const plan = _plan && (/^(b|B)$/.test(_plan) ? 'planB' : 'planA')
-    const [price, other=''] = (_sellPrice || _plan).split('*')
-    const [number] = other.split("=")
-    const needCount = /=/.test(_sellPrice || _plan)
     let result = sellPrice
-    if (number && plan && (needCount || lastPrice >= price)) {
-      const lumpSum = setNumberOfDigits(price*number*(1-FEE_RATE))
-      totalNumber[plan] += Number(number)
-      totalMoney[plan] += Number(lumpSum)
-      result = `${plan === 'planB' ? 'B#' : ''}${price}*${number}=${lumpSum}`
-    }
+    sellPrice.replace(/^(#)?(b|B)?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, isPlanB, price, number, extraMoney = 0, equalSign) => {
+      const plan = isPlanB ? 'planB' : 'planA'
+      const needCount = !hash && price && number && (equalSign || lastPrice >= price) 
+      if (needCount) {
+        const lumpSum = setNumberOfDigits(price * number * (1 - FEE_RATE) + Number(extraMoney))
+        totalNumber[plan] += Number(number)
+        totalMoney[plan] += Number(lumpSum)
+        result = `${plan === 'planB' ? 'B' : ''}${price}*${number}${extraMoney ? `+${extraMoney}` : ''}=${lumpSum}`
+      }
+      return 'success'
+    })
     return result
   };
 
