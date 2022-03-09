@@ -77,7 +77,7 @@
                   <p style="margin:4px 0 0;text-align: left" id="${plan}SellHighResult"></p>
                 </p>
               `
-            })
+            }).join('')
           }
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalDaysBox"></span>日: <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
