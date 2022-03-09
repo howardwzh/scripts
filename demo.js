@@ -1,6 +1,7 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/23').getTime() // Starting time
+  const ALL_PLANS = ['planA','planB','planC'] // can add more, if need
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -21,22 +22,18 @@
   addMainPanel();
   fixedLastPriceDom();
   setTimeout(() => {
-    // planA
-    checkBuyPrice('planA');
-    previewSellHighResult('planA');
-    previewResult('planA');
-    addEventToCountTimeBox('planA');
-    addEventToConfirmDoneBtn('planA');
-    // planB
-    checkBuyPrice('planB');
-    previewSellHighResult('planB');
-    previewResult('planB');
-    addEventToCountTimeBox('planB');
-    addEventToConfirmDoneBtn('planB');
+    // init all plans
+    for (let i = 0; i < ALL_PLANS.length; i++) {
+      checkBuyPrice(ALL_PLANS[i]);
+      previewSellHighResult(ALL_PLANS[i]);
+      previewResult(ALL_PLANS[i]);
+      addEventToCountTimeBox(ALL_PLANS[i]);
+      addEventToConfirmDoneBtn(ALL_PLANS[i]);
+    }
     // global
+    checkAllSellPrices();
     setTotalDays();
     pushPriceToHistory();
-    checkAllSellPrices();
     addEventToClosePanel();
     addEventToEditRemark();
     addEventToIncrease('totalIncrease', 'saveForever')
@@ -65,28 +62,23 @@
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
           <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
-          <p style="margin:16px 0 0">
-            <div style="text-align: left">A<b id="planATotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planASuggestList" style="margin-left: 12px"></b></div>
-            <div style="display: flex">
-              <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planAInput"/>
-              <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planASellHighInput"/>
-              <span id="planACountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
-              <button id="planADoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
-            </div>
-            <p style="margin:4px 0 0;text-align: left" id="planAWinNumber"></p>
-            <p style="margin:4px 0 0;text-align: left" id="planASellHighResult"></p>
-          </p>
-          <p style="margin:16px 0 0">
-            <div style="text-align: left">B<b id="planBTotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="planBSuggestList" style="margin-left: 12px"></b></div>
-            <div style="display: flex">
-              <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBInput"/>
-              <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="planBSellHighInput"/>
-              <span id="planBCountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
-              <button id="planBDoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
-            </div>
-            <p style="margin:4px 0 0;text-align: left" id="planBWinNumber"></p>
-            <p style="margin:4px 0 0;text-align: left" id="planBSellHighResult"></p>
-          </p>
+          ${
+            ALL_PLANS.map((plan) => {
+              return `
+                <p style="margin:16px 0 0">
+                  <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
+                  <div style="display: flex">
+                    <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
+                    <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
+                    <span id="${plan}CountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
+                    <button id="${plan}DoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
+                  </div>
+                  <p style="margin:4px 0 0;text-align: left" id="${plan}WinNumber"></p>
+                  <p style="margin:4px 0 0;text-align: left" id="${plan}SellHighResult"></p>
+                </p>
+              `
+            })
+          }
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalDaysBox"></span>日: <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
             <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月: <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
@@ -167,40 +159,41 @@
     function handleSellListChange() {
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
       const sellPrices = sellPriceInput.value.split('\n')
-      totalNumber['planA'] = 0
-      totalMoney['planA'] = 0
-      totalNumber['planB'] = 0
-      totalMoney['planB'] = 0
+      let hasSold = false
+      for (let x = 0; x < ALL_PLANS.length; x++) {
+        totalNumber[ALL_PLANS[x]] = 0
+        totalMoney[ALL_PLANS[x]] = 0
+      }
       for (let i = 0; i < sellPrices.length; i++) {
         sellPrices[i] = checkSellPrice(sellPrices[i], lastPrice)
       }
-      if(totalMoney['planA'] || totalMoney['planB']) {
+      for (let y = 0; y < ALL_PLANS.length; y++) {
+        document.getElementById(`${ALL_PLANS[y]}TotalBox`).innerText = totalMoney[ALL_PLANS[y]] ? `${setNumberOfDigits(totalMoney[ALL_PLANS[y]])} | ${totalNumber[ALL_PLANS[y]]}` : ''
+        computeSuggestPrice(ALL_PLANS[y])
+        document.getElementById(`${ALL_PLANS[y]}Input`).dispatchEvent(new Event('change'));
+        hasSold = hasSold || !!totalMoney[ALL_PLANS[y]]
+      }
+      if(hasSold) {
         setStatusColor(sellPriceInput, 'success');
       } else {
         setStatusColor(sellPriceInput, 'none');
       }
-      document.getElementById(`planATotalBox`).innerText = totalMoney['planA'] ? `${setNumberOfDigits(totalMoney['planA'])} | ${totalNumber['planA']}` : ''
-      document.getElementById(`planBTotalBox`).innerText = totalMoney['planB'] ? `${setNumberOfDigits(totalMoney['planB'])} | ${totalNumber['planB']}` : ''
       sellPriceInput.value = sellPrices.join('\n')
       localStorage.setItem('sellPriceInput', sellPriceInput.value);
-      computeSuggestPrice('planA')
-      computeSuggestPrice('planB')
-      document.getElementById(`planAInput`).dispatchEvent(new Event('change'));
-      document.getElementById(`planBInput`).dispatchEvent(new Event('change'));
     }
   };
 
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(b|B)?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, isPlanB, price, number, extraMoney = 0, equalSign) => {
-      const plan = isPlanB ? 'planB' : 'planA'
+    sellPrice.replace(/^(#)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, whatPlan, price, number, extraMoney = 0, equalSign) => {
+      const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = !hash && price && number && (equalSign || lastPrice >= price) 
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - FEE_RATE) + Number(extraMoney))
         totalNumber[plan] += Number(number)
         totalMoney[plan] += Number(lumpSum)
-        result = `${plan === 'planB' ? 'B' : ''}${price}*${number}${extraMoney ? `+${extraMoney}` : ''}=${lumpSum}`
+        result = `${plan.slice(-1)}${price}*${number}${extraMoney ? `+${extraMoney}` : ''}=${lumpSum}`
       }
       return 'success'
     })
@@ -450,7 +443,7 @@
     const ms = Math.floor((time - hs * ONE_H) / ONE_M)
     const ss = Math.floor((time - hs * ONE_H - ms * ONE_M) / ONE_S)
 
-    all.push(`0${hs}`.slice(-2))
+    all.push(`00${hs}`.slice(-3))
     all.push(`0${ms}`.slice(-2))
     all.push(`0${ss}`.slice(-2))
 
