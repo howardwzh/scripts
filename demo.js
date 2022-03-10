@@ -306,7 +306,7 @@
     const todayIncrease = document.getElementById('todayIncrease');
 
     confirmDoneBtn.addEventListener('dblclick', () => {
-      if (!buyPriceInput.value) return
+      if (!offsetNumber[plan]) return
       const totalIncreaseValue = Number(totalIncrease.innerText) + offsetNumber[plan]
       const monthIncreaseValue = Number(monthIncrease.innerText) + offsetNumber[plan]
       const todayIncreaseValue = Number(todayIncrease.innerText) + offsetNumber[plan]
