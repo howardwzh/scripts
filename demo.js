@@ -188,12 +188,13 @@
     let result = sellPrice
     sellPrice.replace(/^(#)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, whatPlan, price, number, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
-      const needCount = !hash && price && number && (equalSign || lastPrice >= price) 
+      const needCount = !hash && price && number && (equalSign || lastPrice >= price)
+      result = `${plan.slice(-1)}${price}*${number}${extraMoney ? `+${extraMoney}` : ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - FEE_RATE) + Number(extraMoney))
         totalNumber[plan] += Number(number)
         totalMoney[plan] += Number(lumpSum)
-        result = `${plan.slice(-1)}${price}*${number}${extraMoney ? `+${extraMoney}` : ''}=${lumpSum}`
+        result += `=${lumpSum}`
       }
       return 'success'
     })
