@@ -1,6 +1,6 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
-  const FIRST_DATE_TIME = new Date('2022/2/23').getTime() // Starting time
+  const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
   const ALL_PLANS = ['planA','planB','planC'] // can add more, if need
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
