@@ -232,7 +232,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`🙏🍀💰财富自由💰🍀🙏`);
+    showDebugMsg(`🙏🍀❤️BB自由❤️🍀🙏`);
   }
 
   // debug显示信息
