@@ -186,16 +186,17 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, whatPlan, price, number, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
-      result = `${hash||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney ? `+${extraMoney}` : ''}`
+      const sign = buySign ? -1 : 1
+      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney ? `+${extraMoney}` : ''}`
       if (needCount) {
-        const lumpSum = setNumberOfDigits(price * number * (1 - FEE_RATE) + Number(extraMoney))
+        const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
         if (!hash) {
-          totalNumber[plan] += Number(number)
-          totalMoney[plan] += Number(lumpSum)
+          totalNumber[plan] += sign * Number(number)
+          totalMoney[plan] += sign * Number(lumpSum)
         }
       }
       return 'success'
