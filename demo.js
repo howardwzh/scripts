@@ -160,7 +160,20 @@
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
       const sellPrices = sellPriceInput.value.split('\n').filter((el) => {
         return el;
-      }).sort()
+      }).sort((a,b) => {
+        const aMatch = a.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
+        const bMatch = b.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
+        const aPlan = (aMatch[3] || 'A').toUpperCase()
+        const bPlan = (bMatch[3] || 'A').toUpperCase()
+        const aPrice = Number(aMatch[4])
+        const bPrice = Number(bMatch[4])
+
+        if (aPlan === bPlan) {
+          return aPrice - bPrice
+        } else {
+          return aPlan > bPlan ? 1 : (aPlan < bPlan ? -1 : 0)
+        }
+      })
       const newSellPrices = []
       let hasSold = false
       let lastPlan
@@ -196,11 +209,11 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)\+?([0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
       const sign = buySign ? -1 : 1
-      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney ? `+${extraMoney}` : ''}`
+      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
