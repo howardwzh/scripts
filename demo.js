@@ -158,14 +158,24 @@
     sellPriceInput.dispatchEvent(new Event('change'));
     function handleSellListChange() {
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
-      const sellPrices = sellPriceInput.value.split('\n')
+      const sellPrices = sellPriceInput.value.split('\n').filter((el) => {
+        return el;
+      }).sort()
+      const newSellPrices = []
       let hasSold = false
+      let lastPlan
       for (let x = 0; x < ALL_PLANS.length; x++) {
         totalNumber[ALL_PLANS[x]] = 0
         totalMoney[ALL_PLANS[x]] = 0
       }
       for (let i = 0; i < sellPrices.length; i++) {
-        sellPrices[i] = checkSellPrice(sellPrices[i], lastPrice)
+        const newItem = checkSellPrice(sellPrices[i], lastPrice)
+        const newPlan = newItem.match(/^(#)?(-)?([a-zA-Z])?/)[3]
+        if (lastPlan && lastPlan !== newPlan) {
+          newSellPrices.push('')
+        }
+        newSellPrices.push(newItem)
+        lastPlan = newPlan
       }
       for (let y = 0; y < ALL_PLANS.length; y++) {
         document.getElementById(`${ALL_PLANS[y]}TotalBox`).innerText = totalMoney[ALL_PLANS[y]] ? `${setNumberOfDigits(totalMoney[ALL_PLANS[y]])} | ${totalNumber[ALL_PLANS[y]]}` : ''
@@ -178,7 +188,7 @@
       } else {
         setStatusColor(sellPriceInput, 'none');
       }
-      sellPriceInput.value = sellPrices.join('\n')
+      sellPriceInput.value = newSellPrices.join('\n')
       localStorage.setItem('sellPriceInput', sellPriceInput.value);
     }
   };
