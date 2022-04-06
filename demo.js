@@ -184,7 +184,7 @@
       for (let i = 0; i < sellPrices.length; i++) {
         const newItem = checkSellPrice(sellPrices[i], lastPrice)
         const newPlan = newItem.match(/^(#)?(-)?([a-zA-Z])?/)[3]
-        if (lastPlan && lastPlan !== newPlan) {
+        if (lastPlan !== newPlan) {
           newSellPrices.push('')
         }
         newSellPrices.push(newItem)
