@@ -54,7 +54,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 137px 27px;
+          padding: 60px 27px;
           text-align: center;
           font-size: 14px;
           font-family: Arial;
@@ -68,8 +68,8 @@
                 <p style="margin:16px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
-                    <input placeholder="buy low" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
-                    <input placeholder="sell high" style="width: 100%; min-height: 28px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
+                    <input placeholder="buy low" style="width: 100%; min-height: 24px;height: 24px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
+                    <input placeholder="sell high" style="width: 100%; min-height: 24px;height: 24px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
                     <span id="${plan}CountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
                     <button id="${plan}DoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
                   </div>
@@ -88,7 +88,7 @@
           <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 90px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 100px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -100,11 +100,13 @@
     lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
-      left:27px;
-      top: 97px;
+      right:20px;
+      top: 49px;
       background-color:#777;
       padding: 2px 7px;
       border-radius: 3px;
+      font-size: 16px;
+      color: #fff
     `);
   };
 
@@ -125,7 +127,7 @@
     monitorHistory.innerHTML = makeHistoryHtml(historyList);
     setInterval(() => {
       const lastPrice = lastPriceDom.innerText;
-      if (lastPrice !== historyList[historyList.length - 1]) {
+      if (localStorage.getItem('isMock') || Number(lastPrice) !== Number(historyList[historyList.length - 1])) {
         historyList.push(lastPrice);
         historyList = historyList.slice(-1 * HISTORY_LENGTH);
         monitorHistory.innerHTML = makeHistoryHtml(historyList);
@@ -163,15 +165,19 @@
       }).sort((a,b) => {
         const aMatch = a.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
         const bMatch = b.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
+        const aHaveHash = aMatch[1] ? 1 : 0
+        const bHaveHash = bMatch[1] ? 1 : 0
         const aPlan = (aMatch[3] || 'A').toUpperCase()
         const bPlan = (bMatch[3] || 'A').toUpperCase()
         const aPrice = Number(aMatch[4])
         const bPrice = Number(bMatch[4])
 
-        if (aPlan === bPlan) {
+        if (aPlan === bPlan && aHaveHash === bHaveHash) {
           return aPrice - bPrice
+        } else if (aPlan === bPlan) {
+          return aHaveHash - bHaveHash
         } else {
-          return aPlan > bPlan ? 1 : (aPlan < bPlan ? -1 : 0)
+          return aPlan - bPlan
         }
       })
       const newSellPrices = []
