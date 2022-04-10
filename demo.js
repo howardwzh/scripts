@@ -61,7 +61,7 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
-          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="8" id="sellPriceInput"></textarea></label></p>
           ${
             ALL_PLANS.map((plan) => {
               return `
@@ -86,7 +86,7 @@
           </p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 0; text-align: left;">备注</div>
-          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="7"></textarea>
+          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 98px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
@@ -100,7 +100,7 @@
     lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
-      right:27px;
+      right:25px;
       top: 46px;
       background-color:#777;
       padding: 2px 7px;
