@@ -61,7 +61,7 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
-          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="8" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
           ${
             ALL_PLANS.map((plan) => {
               return `
@@ -100,7 +100,7 @@
     lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
-      right:25px;
+      right:26px;
       top: 46px;
       background-color:#777;
       padding: 2px 7px;
