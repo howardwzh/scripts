@@ -60,7 +60,7 @@
           font-family: Arial;
           "
         >
-          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 27px;"></div>
+          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
           <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;min-height: 77px;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="5" id="sellPriceInput"></textarea></label></p>
           ${
             ALL_PLANS.map((plan) => {
@@ -68,8 +68,8 @@
                 <p style="margin:16px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
-                    <input placeholder="buy low" style="width: 100%; min-height: 24px;height: 24px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
-                    <input placeholder="sell high" style="width: 100%; min-height: 24px;height: 24px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
+                    <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
+                    <input placeholder="sell high" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
                     <span id="${plan}CountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
                     <button id="${plan}DoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
                   </div>
@@ -85,10 +85,10 @@
             <span id="todayIncreaseBox" style="display: inline-block; width: 32%">今日: <b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
           </p>
           <p id="debugMsg"></p>
-          <div id="monitorRemark" style="padding: 12px 0; text-align: left;">备注</div>
-          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
+          <div id="monitorRemark" style="padding: 0; text-align: left;">备注</div>
+          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="7"></textarea>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 100px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 98px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
@@ -100,13 +100,12 @@
     lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
-      right:20px;
-      top: 49px;
+      right:27px;
+      top: 46px;
       background-color:#777;
       padding: 2px 7px;
       border-radius: 3px;
-      font-size: 16px;
-      color: #fff
+      font-size: 18px;
     `);
   };
 
