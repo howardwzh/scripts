@@ -101,7 +101,7 @@
       position:fixed;
       z-index:7777777;
       right:26px;
-      top: 46px;
+      top: 44px;
       background-color:#777;
       padding: 2px 7px;
       border-radius: 3px;
