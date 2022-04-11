@@ -105,7 +105,7 @@
       background-color:#777;
       padding: 2px 7px;
       border-radius: 3px;
-      font-size: 20px;
+      font-size: 22px;
     `);
   };
 
