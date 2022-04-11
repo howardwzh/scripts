@@ -176,7 +176,7 @@
         } else if (aPlan === bPlan) {
           return aHaveHash - bHaveHash
         } else {
-          return aPlan - bPlan
+          return aPlan > bPlan ? 1 : -1
         }
       })
       const newSellPrices = []
