@@ -1,7 +1,7 @@
 (function(){
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
-  const ALL_PLANS = ['planA','planB','planC'] // can add more, if need
+  const ALL_PLANS = ['planA','planB','planS'] // can add more, if need
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -162,8 +162,8 @@
       const sellPrices = sellPriceInput.value.split('\n').filter((el) => {
         return el;
       }).sort((a,b) => {
-        const aMatch = a.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
-        const bMatch = b.match(/^(#)?(-)?([a-zA-Z])?([0-9.]+)/)
+        const aMatch = a.match(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)/)
+        const bMatch = b.match(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)/)
         const aHaveHash = aMatch[1] ? 1 : 0
         const bHaveHash = bMatch[1] ? 1 : 0
         const aPlan = (aMatch[3] || 'A').toUpperCase()
@@ -188,7 +188,7 @@
       }
       for (let i = 0; i < sellPrices.length; i++) {
         const newItem = checkSellPrice(sellPrices[i], lastPrice)
-        const newPlan = newItem.match(/^(#)?(-)?([a-zA-Z])?/)[3]
+        const newPlan = newItem.match(/^(#)?(-|_)?([a-zA-Z])?/)[3]
         if (lastPlan !== newPlan) {
           newSellPrices.push('')
         }
@@ -214,17 +214,21 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*([0-9.]+)(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number=10, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
-      const sign = buySign ? -1 : 1
+      const sign = {
+        '-': -1,
+        '_': 0,
+        'undefined': 1
+      }[buySign]
       result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
         if (!hash) {
-          totalNumber[plan] += sign * Number(number)
-          totalMoney[plan] += sign * Number(lumpSum)
+          totalNumber[plan] += (buySign ? -1 : 1) * Number(number)
+          totalMoney[plan] += (buySign ? -1 : 1) * Number(lumpSum)
         }
       }
       return 'success'
