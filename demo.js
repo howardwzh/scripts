@@ -16,6 +16,7 @@
   const ONE_D = 24 * ONE_H
   const HISTORY_LENGTH = 7 // 7 price histories
   const offsetNumber = {}
+  const buyedTotalNumber = {}
   const totalNumber = {}
   const totalMoney = {}
 
@@ -69,6 +70,7 @@
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
                     <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
+                    <input placeholder="buy part" style="width: 60px; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}PartInput"/>
                     <input placeholder="sell high" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
                     <span id="${plan}CountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
                     <button id="${plan}DoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
@@ -214,21 +216,23 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number=10, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number=10, buyPartSource, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
+      const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
       const sign = {
         '-': -1,
         '_': 0,
         'undefined': 1
       }[buySign]
-      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${extraMoney || ''}`
+      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource||''}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
         if (!hash) {
-          totalNumber[plan] += (buySign ? -1 : 1) * Number(number)
-          totalMoney[plan] += (buySign ? -1 : 1) * Number(lumpSum)
+          const _number = buySign === '_' ? _buyPartSource : number
+          totalNumber[plan] += (buySign ? -1 : 1) * _number
+          totalMoney[plan] += (buySign ? -1 : 1) * lumpSum
         }
       }
       return 'success'
@@ -337,15 +341,18 @@
   function addEventToConfirmDoneBtn(plan) {
     const confirmDoneBtn = document.getElementById(`${plan}DoneBtn`);
     const buyPriceInput = document.getElementById(`${plan}Input`);
+    const buyPartInput = document.getElementById(`${plan}PartInput`);
     const totalIncrease = document.getElementById('totalIncrease');
     const monthIncrease = document.getElementById('monthIncrease');
     const todayIncrease = document.getElementById('todayIncrease');
+    
 
     confirmDoneBtn.addEventListener('dblclick', () => {
-      if (!offsetNumber[plan]) return
-      const totalIncreaseValue = Number(totalIncrease.innerText) + offsetNumber[plan]
-      const monthIncreaseValue = Number(monthIncrease.innerText) + offsetNumber[plan]
-      const todayIncreaseValue = Number(todayIncrease.innerText) + offsetNumber[plan]
+      const _offsetNumber = (buyPartInput.value ? Number(buyPartInput.value) / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
+      if (!buyPriceInput.value || !_offsetNumber) return
+      const totalIncreaseValue = Number(totalIncrease.innerText) + _offsetNumber
+      const monthIncreaseValue = Number(monthIncrease.innerText) + _offsetNumber
+      const todayIncreaseValue = Number(todayIncrease.innerText) + _offsetNumber
       totalIncrease.innerHTML = makeSuccessOrDangerHtml(totalIncreaseValue);
       monthIncrease.innerHTML = makeSuccessOrDangerHtml(monthIncreaseValue);
       todayIncrease.innerHTML = makeSuccessOrDangerHtml(todayIncreaseValue);
@@ -353,10 +360,20 @@
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
       localStorage.setItem(`${plan}Input`, '');
+      if (buyPartInput.value) {
+        insertBuyPartToSellPriceInput(plan, buyPriceInput.value, buyPartInput.value)
+        buyPartInput.value = '';
+      }
       buyPriceInput.value = '';
       document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
       countTime(plan, 'destroy');
     })    
+  }
+
+  function insertBuyPartToSellPriceInput(plan, price, number) {
+    const sellPriceInput = document.getElementById('sellPriceInput')
+    sellPriceInput.value = `_${plan.slice(-1)}${price}*${number}(${setNumberOfDigits(totalNumber[plan] * Number(number) / buyedTotalNumber[plan])})=\n` + sellPriceInput.value
+    sellPriceInput.dispatchEvent(new Event('change'));
   }
 
   // 根据value生成对应颜色的html
@@ -393,10 +410,10 @@
         winNumber.innerHTML = ''
       } else {
         const buyPrice = buyPriceInput.value
-        const buyedTotalNumber = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
         const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
-        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber-totalNumber[plan]-fee))
-        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber}` : ''
+        buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
+        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan]-totalNumber[plan]-fee))
+        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber[plan]}` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
