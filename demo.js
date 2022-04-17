@@ -413,7 +413,7 @@
           </tr>`
         )).join('')}
       </table>`
-    completeRecordContent.innerHTML = completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 40px); font-size: 20px; display: block;font-weight: normal">暂无记录</b>'
+    completeRecordContent.innerHTML = completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
     completeRecordPopup.style.display = 'block'
   }
 
