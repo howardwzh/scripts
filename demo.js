@@ -93,7 +93,7 @@
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
             <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
-            <button id="completeRecordCloseBtn" style="position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 12px; font-weight: 900; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">╳</button>
+            <button id="completeRecordCloseBtn" style="position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
           </div>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 98px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
@@ -403,13 +403,13 @@
     } else if (type === 'today') {
       completedRecord = []
     }
-    
+
     const _html = `<table style="border-collapse: collapse;">
         ${completedRecord.map(c => (
           `<tr>
-            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.soldText}</td>
-            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.buyedText}</td>
-            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.time||''}</td>
+            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
+            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
           </tr>`
         )).join('')}
       </table>`
@@ -549,14 +549,16 @@
   function countTime(plan, type) {
     const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
     let startDemoTime = Number(localStorage.getItem(`${plan}StartTime`) || 0)
-    const duration = startDemoTime ? formatTime(new Date().getTime() - startDemoTime) : ''
+    let lastDuration = ''
     if (type === 'new') {
       startDemoTime = new Date().getTime()
     } else if (type === 'destroy') {
+      lastDuration = startDemoTime ? formatTime(new Date().getTime() - startDemoTime) : ''
       startDemoTime = 0
     }
-    if (duration) {
+    if (startDemoTime) {
       countTimeInters[plan] = setInterval(() => {
+        const duration = startDemoTime ? formatTime(new Date().getTime() - startDemoTime) : ''
         countTimeBox.innerHTML = `<span style="color:${duration > ONE_D ? WARNING_COLOR : DEFAULT_COLOR}">${duration}</span>`
       }, 1000);
     } else {
@@ -564,7 +566,7 @@
       countTimeBox.innerHTML = COUNT_DEFAULT_TEXT
     }
     localStorage.setItem(`${plan}StartTime`, startDemoTime)
-    return duration
+    return lastDuration
   }
 
   // 格式化时间格式
@@ -582,14 +584,20 @@
   }
 
   // 格式化时间格式
-  function formatDate(date, hasSeconds) {
+  function formatDate(date, format='YYYY-MM-DD hh:mm') {
     const year = date.getFullYear()
     const month = `0${date.getMonth() + 1}`.slice(-2)
     const day = `0${date.getDate()}`.slice(-2)
     const hours = `0${date.getHours()}`.slice(-2)
     const minute = `0${date.getMinutes()}`.slice(-2)
     const seconds = `0${date.getSeconds()}`.slice(-2)
-    return `${year}-${month}-${day} ${hours}:${minute}${hasSeconds ? `:${seconds}` : ''}`
+    return format
+      .replace('YYYY', year)
+      .replace('MM', month)
+      .replace('DD', day)
+      .replace('hh', hours)
+      .replace('mm', minute)
+      .replace('ss', seconds)
   }
 
   // 朗读
