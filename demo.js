@@ -407,9 +407,9 @@
     const _html = `<table style="border-collapse: collapse;">
         ${completedRecord.map(c => (
           `<tr>
-            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
-            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
-            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
+            <td style="width:35vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
+            <td style="width:25vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
           </tr>`
         )).join('')}
       </table>`
