@@ -394,26 +394,28 @@
   // 展示已完成交易记录
   function showCompletedRecord(type) {
     let completedRecord = JSON.parse(localStorage.getItem('completedRecord')||'[]');
+    let _completedRecord = [...completedRecord]
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
-
-    // TODO: 根据type过滤
-    if (type === 'month') {
-      completedRecord = []
-    } else if (type === 'today') {
-      completedRecord = []
+    if (type) {
+      const keyDate = type === 'month' ? formatDate(new Date(), "YYYY-MM") : formatDate(new Date(), "YYYY-MM-DD")
+      _completedRecord = []
+      completedRecord.map(c => {
+        if (c.time.indexOf(keyDate) === 0) {
+          _completedRecord.push(c)
+        }
+      })
     }
-
     const _html = `<table style="border-collapse: collapse;">
-        ${completedRecord.map(c => (
+        ${_completedRecord.map(c => (
           `<tr>
-            <td style="width:35vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+            <td style="width:32vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
             <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
-            <td style="width:25vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
+            <td style="width:28vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
           </tr>`
         )).join('')}
       </table>`
-    completeRecordContent.innerHTML = completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
+    completeRecordContent.innerHTML = _completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
     completeRecordPopup.style.display = 'block'
   }
 
@@ -427,7 +429,7 @@
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const toggleBtn = document.getElementById('toggleBtn')
     totalIncreaseLabel.addEventListener('click', () => {
-      showCompletedRecord('total')
+      showCompletedRecord()
       lastPriceDom.style.display = 'none'
       toggleBtn.style.display = 'none'
     })    
