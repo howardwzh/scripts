@@ -93,7 +93,7 @@
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
             <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
-            <button id="completeRecordCloseBtn" style="position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
+            <button id="completeRecordCloseBtn" style="display: none;position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
           </div>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 98px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
@@ -425,7 +425,7 @@
     const monthIncreaseLabel = document.getElementById('monthIncreaseLabel')
     const todayIncreaseLabel = document.getElementById('todayIncreaseLabel')
     const completeRecordPopup = document.getElementById('completeRecordPopup')
-    const completeRecordCloseBtn = document.getElementById('completeRecordCloseBtn')
+    // const completeRecordCloseBtn = document.getElementById('completeRecordCloseBtn')
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const toggleBtn = document.getElementById('toggleBtn')
     totalIncreaseLabel.addEventListener('click', () => {
@@ -443,7 +443,8 @@
       lastPriceDom.style.display = 'none'
       toggleBtn.style.display = 'none'
     })    
-    completeRecordCloseBtn.addEventListener('click', () => {
+    // completeRecordCloseBtn.addEventListener('click', () => {
+      completeRecordPopup.addEventListener('dblclick', () => {
       completeRecordPopup.style.display = 'none'
       lastPriceDom.style.display = 'block'
       toggleBtn.style.display = 'block'
