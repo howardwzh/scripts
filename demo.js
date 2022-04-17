@@ -19,6 +19,7 @@
   const buyedTotalNumber = {}
   const totalNumber = {}
   const totalMoney = {}
+  const soldRecord = {}
 
   addMainPanel();
   fixedLastPriceDom();
@@ -37,6 +38,7 @@
     pushPriceToHistory();
     addEventToClosePanel();
     addEventToEditRemark();
+    addEventToCompleteRecord();
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
@@ -82,13 +84,17 @@
             }).join('')
           }
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalDaysBox"></span>日: <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="monthIncreaseBox" style="display: inline-block; width: 32%">本月: <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 32%">今日: <b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalIncreaseLabel"><span id="totalDaysBox"></span>日:</span> <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="monthIncreaseBox" style="display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="todayIncreaseBox" style="display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
           </p>
           <p id="debugMsg"></p>
           <div id="monitorRemark" style="padding: 0; text-align: left;">备注</div>
           <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
+          <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
+            <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
+            <button id="completeRecordCloseBtn" style="position: absolute; width: 28px; height: 28px; right: 10px; top: 10px; font-size: 16px; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 50%;">X</button>
+          </div>
         </div>
         <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 98px; right: 27px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
@@ -233,6 +239,7 @@
           const _number = buySign === '_' ? _buyPartSource : number
           totalNumber[plan] += (buySign ? -1 : 1) * _number
           totalMoney[plan] += (buySign ? -1 : 1) * lumpSum
+          soldRecord[plan] = soldRecord[plan] ? `${soldRecord[plan]}<br/>${result.split('=')[0]}` : result.split('=')[0]
         }
       }
       return 'success'
@@ -360,13 +367,77 @@
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
       localStorage.setItem(`${plan}Input`, '');
+      const duration = countTime(plan, 'destroy');
       if (buyPartInput.value) {
         insertBuyPartToSellPriceInput(plan, buyPriceInput.value, buyPartInput.value)
         buyPartInput.value = '';
+      } else {
+        addCompletedRecord(plan, buyPriceInput.value, duration)
       }
       buyPriceInput.value = '';
       document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
-      countTime(plan, 'destroy');
+      
+    })    
+  }
+
+  // 追加交易完成记录
+  function addCompletedRecord(plan, buyPrice, duration) {
+    const completedRecord = JSON.parse(localStorage.getItem('completedRecord')||'[]');
+    completedRecord.push({
+      soldText: soldRecord[plan],
+      buyedText: `${totalMoney[plan]} / ${buyPrice}<br/>${totalNumber[plan]}${offsetNumber[plan] > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`}`,
+      time: `${formatDate(new Date())}<br/>${duration}`
+    })
+    localStorage.setItem('completedRecord', JSON.stringify(completedRecord))
+  }
+
+  // 展示已完成交易记录
+  function showCompletedRecord(type) {
+    const completedRecord = JSON.parse(localStorage.getItem('completedRecord')||'[]');
+    const completeRecordPopup = document.getElementById('completeRecordPopup')
+    const completeRecordContent = document.getElementById('completeRecordContent')
+    // TODO: 根据type过滤
+    const _html = `<table style="border-collapse: collapse;">
+        ${completedRecord.map(c => (
+          `<tr>
+            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.soldText}</td>
+            <td style="width:30vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.buyedText}</td>
+            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:12px">${c.time||''}</td>
+          </tr>`
+        )).join('')}
+      </table>`
+    completeRecordContent.innerHTML = _html
+    completeRecordPopup.style.display = 'block'
+  }
+
+  // 点击关闭已完成交易记录
+  function addEventToCompleteRecord() {
+    const totalIncreaseLabel = document.getElementById('totalIncreaseLabel')
+    const monthIncreaseLabel = document.getElementById('monthIncreaseLabel')
+    const todayIncreaseLabel = document.getElementById('todayIncreaseLabel')
+    const completeRecordPopup = document.getElementById('completeRecordPopup')
+    const completeRecordCloseBtn = document.getElementById('completeRecordCloseBtn')
+    const lastPriceDom = document.getElementById('_spanLastPrice');
+    const toggleBtn = document.getElementById('toggleBtn')
+    totalIncreaseLabel.addEventListener('click', () => {
+      showCompletedRecord('total')
+      lastPriceDom.style.display = 'none'
+      toggleBtn.style.display = 'none'
+    })    
+    monthIncreaseLabel.addEventListener('click', () => {
+      showCompletedRecord('month')
+      lastPriceDom.style.display = 'none'
+      toggleBtn.style.display = 'none'
+    })    
+    todayIncreaseLabel.addEventListener('click', () => {
+      showCompletedRecord('today')
+      lastPriceDom.style.display = 'none'
+      toggleBtn.style.display = 'none'
+    })    
+    completeRecordCloseBtn.addEventListener('click', () => {
+      completeRecordPopup.style.display = 'none'
+      lastPriceDom.style.display = 'block'
+      toggleBtn.style.display = 'block'
     })    
   }
 
@@ -471,22 +542,22 @@
   function countTime(plan, type) {
     const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
     let startDemoTime = Number(localStorage.getItem(`${plan}StartTime`) || 0)
-    let durationTime = 0
+    const duration = startDemoTime ? formatTime(new Date().getTime() - startDemoTime) : ''
     if (type === 'new') {
       startDemoTime = new Date().getTime()
     } else if (type === 'destroy') {
       startDemoTime = 0
     }
-    if (startDemoTime) {
+    if (duration) {
       countTimeInters[plan] = setInterval(() => {
-        durationTime = new Date().getTime() - startDemoTime
-        countTimeBox.innerHTML = `<span style="color:${durationTime > ONE_D ? WARNING_COLOR : DEFAULT_COLOR}">${formatTime(durationTime)}</span>`
+        countTimeBox.innerHTML = `<span style="color:${duration > ONE_D ? WARNING_COLOR : DEFAULT_COLOR}">${duration}</span>`
       }, 1000);
     } else {
       countTimeInters[plan] && clearInterval(countTimeInters[plan])
       countTimeBox.innerHTML = COUNT_DEFAULT_TEXT
     }
     localStorage.setItem(`${plan}StartTime`, startDemoTime)
+    return duration
   }
 
   // 格式化时间格式
@@ -501,6 +572,17 @@
     all.push(`0${ss}`.slice(-2))
 
     return all.join(':')
+  }
+
+  // 格式化时间格式
+  function formatDate(date, hasSeconds) {
+    const year = date.getFullYear()
+    const month = `0${date.getMonth() + 1}`.slice(-2)
+    const day = `0${date.getDate()}`.slice(-2)
+    const hours = `0${date.getHours()}`.slice(-2)
+    const minute = `0${date.getMinutes()}`.slice(-2)
+    const seconds = `0${date.getSeconds()}`.slice(-2)
+    return `${year}-${month}-${day} ${hours}:${minute}${hasSeconds ? `:${seconds}` : ''}`
   }
 
   // 朗读
