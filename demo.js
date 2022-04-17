@@ -8,7 +8,7 @@
   const SUCCESS_COLOR = '#5384ec'
   const DANGER_COLOR = '#d85140'
   const WARNING_COLOR = '#E6A23C'
-  const COUNT_DEFAULT_TEXT = "开始计时"
+  const COUNT_DEFAULT_TEXT = "计时器"
   const SUGGEST_NUMBER_GROUP = [0, -0.04] // -4%
   const ONE_S = 1000
   const ONE_M = 60 * ONE_S
@@ -72,7 +72,7 @@
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
                     <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
-                    <input placeholder="buy part" style="width: 60px; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}PartInput"/>
+                    <input placeholder="part" style="width: 60px; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}PartInput"/>
                     <input placeholder="sell high" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}SellHighInput"/>
                     <span id="${plan}CountTimeBox" style="display: flex;flex-direction: column;justify-content: center;padding-left: 10px; white-space: nowrap; font-weight: 700;color:${DEFAULT_COLOR}">${COUNT_DEFAULT_TEXT}</span>
                     <button id="${plan}DoneBtn" style="white-space: nowrap; margin-left: 10px; border-radius: 3px;">完成</button>
@@ -410,8 +410,8 @@
         ${_completedRecord.map(c => (
           `<tr>
             <td style="width:32vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
-            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
-            <td style="width:28vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time||''}</td>
+            <td style="width:42vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
+            <td style="width:26vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
           </tr>`
         )).join('')}
       </table>`
