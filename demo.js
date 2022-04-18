@@ -1,7 +1,7 @@
-(function(){
+(function () {
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
-  const ALL_PLANS = ['planA','planB','planS'] // can add more, if need
+  const ALL_PLANS = ['planA', 'planB', 'planS'] // can add more, if need
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -65,9 +65,8 @@
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
           <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
-          ${
-            ALL_PLANS.map((plan) => {
-              return `
+          ${ALL_PLANS.map((plan) => {
+      return `
                 <p style="margin:16px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
@@ -81,8 +80,8 @@
                   <p style="margin:4px 0 0;text-align: left" id="${plan}SellHighResult"></p>
                 </p>
               `
-            }).join('')
-          }
+    }).join('')
+      }
           <p>
             <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalIncreaseLabel"><span id="totalDaysBox"></span>日:</span> <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
             <span id="monthIncreaseBox" style="display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
@@ -122,7 +121,7 @@
     const totalDaysBox = document.getElementById('totalDaysBox')
     const firstTime = Number(localStorage.getItem(`increaseFirstTime`) || new Date(new Date().toLocaleDateString()).getTime());
     const nowTime = new Date().getTime()
-    totalDaysBox.innerText = Math.ceil((nowTime-firstTime)/ONE_D)
+    totalDaysBox.innerText = Math.ceil((nowTime - firstTime) / ONE_D)
     localStorage.setItem(`increaseFirstTime`, firstTime)
   }
 
@@ -147,11 +146,11 @@
   // 拼接历史记录html
   function makeHistoryHtml(historyList) {
     let result = '<div style="font-size: 14px;">'
-    for(let i = 0; i < historyList.length; i++) {
-      const offset = i > 0 ? Math.round((historyList[i] - historyList[i-1]) * 1000) / 1000 : 0
-      const criticalValue = i > 0 ? Math.min(historyList[i], historyList[i-1]) / 100 : 999999
+    for (let i = 0; i < historyList.length; i++) {
+      const offset = i > 0 ? Math.round((historyList[i] - historyList[i - 1]) * 1000) / 1000 : 0
+      const criticalValue = i > 0 ? Math.min(historyList[i], historyList[i - 1]) / 100 : 999999
       result += `
-        ${i > 0 ? `<span style="background-color: ${ Math.abs(offset) < criticalValue ? INFO_COLOR : WARNING_COLOR};margin: 0 7px; border-radius: 3px; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
+        ${i > 0 ? `<span style="background-color: ${Math.abs(offset) < criticalValue ? INFO_COLOR : WARNING_COLOR};margin: 0 7px; border-radius: 3px; color: #fff; font-size: 12px; padding: 0 2px;">${offset}</span>` : ''}
         ${i < historyList.length - 1 ? `<span>${historyList[i]}</span>` : ''}
       `
     }
@@ -169,7 +168,7 @@
       const lastPrice = Number(document.getElementById('_spanLastPrice').innerText);
       const sellPrices = sellPriceInput.value.split('\n').filter((el) => {
         return el;
-      }).sort((a,b) => {
+      }).sort((a, b) => {
         const aMatch = a.match(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)/)
         const bMatch = b.match(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)/)
         const aHaveHash = aMatch[1] ? 1 : 0
@@ -193,6 +192,7 @@
       for (let x = 0; x < ALL_PLANS.length; x++) {
         totalNumber[ALL_PLANS[x]] = 0
         totalMoney[ALL_PLANS[x]] = 0
+        soldRecord[ALL_PLANS[x]] = ''
       }
       for (let i = 0; i < sellPrices.length; i++) {
         const newItem = checkSellPrice(sellPrices[i], lastPrice)
@@ -209,7 +209,7 @@
         document.getElementById(`${ALL_PLANS[y]}Input`).dispatchEvent(new Event('change'));
         hasSold = hasSold || !!totalMoney[ALL_PLANS[y]]
       }
-      if(hasSold) {
+      if (hasSold) {
         setStatusColor(sellPriceInput, 'success');
       } else {
         setStatusColor(sellPriceInput, 'none');
@@ -222,7 +222,7 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number=10, buyPartSource, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
       const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
@@ -231,7 +231,7 @@
         '_': 0,
         'undefined': 1
       }[buySign]
-      result = `${hash||''}${buySign||''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource||''}${extraMoney || ''}`
+      result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
@@ -254,10 +254,10 @@
     buyPriceInput.value = localStorage.getItem(`${plan}Input`);
     setInterval(() => {
       const lastPrice = Number(lastPriceDom.innerText);
-      const buyPrice = Number(buyPriceInput.value||0);
+      const buyPrice = Number(buyPriceInput.value || 0);
       localStorage.setItem(`${plan}Input`, buyPrice || '');
-      
-      if(!buyPrice || lastPrice > buyPrice) {
+
+      if (!buyPrice || lastPrice > buyPrice) {
         setStatusColor(buyPriceInput, 'none');
       } else if (lastPrice <= buyPrice - 0.2) {
         setStatusColor(buyPriceInput, 'warning');
@@ -290,7 +290,7 @@
     document.getElementById('toggleBtn').addEventListener('dblclick', () => {
       showPanel = !showPanel;
       toggleShowPanel(showPanel);
-    });  
+    });
   }
 
   // 打开/关闭 编辑备注
@@ -305,7 +305,7 @@
       monitorRemarkTextarea.value = monitorRemark.innerText;
       monitorRemarkTextarea.focus()
     })
-    monitorRemarkTextarea.addEventListener('blur', () => { 
+    monitorRemarkTextarea.addEventListener('blur', () => {
       monitorRemarkTextarea.style.display = 'none';
       monitorRemark.style.display = "block";
       monitorRemark.innerText = monitorRemarkTextarea.value || '备注';
@@ -327,18 +327,18 @@
       increase.innerHTML = makeSuccessOrDangerHtml(localStorage.getItem(increaseScope) || '0');
     }
 
-    increaseBox.addEventListener('dblclick', () => { 
+    increaseBox.addEventListener('dblclick', () => {
       increase.style.display = 'none'
       increaseInput.style.display = 'inline-block'
       increaseInput.value = increase.innerText;
       increaseInput.focus()
     })
-    increaseInput.addEventListener('blur', () => { 
+    increaseInput.addEventListener('blur', () => {
       increase.style.display = 'inline-block'
       increaseInput.style.display = 'none';
       increase.innerHTML = makeSuccessOrDangerHtml(increaseInput.value || '0');
       localStorage.setItem(increaseScope, increase.innerText);
-    })    
+    })
   }
 
   // 监听 完成
@@ -349,11 +349,12 @@
     const totalIncrease = document.getElementById('totalIncrease');
     const monthIncrease = document.getElementById('monthIncrease');
     const todayIncrease = document.getElementById('todayIncrease');
-    
+
 
     confirmDoneBtn.addEventListener('dblclick', () => {
-      const _offsetNumber = (buyPartInput.value ? Number(buyPartInput.value) / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
+      const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
       if (!buyPriceInput.value || !_offsetNumber) return
+      const duration = document.getElementById(`${plan}CountTimeBox`).innerText
       const totalIncreaseValue = Number(totalIncrease.innerText) + _offsetNumber
       const monthIncreaseValue = Number(monthIncrease.innerText) + _offsetNumber
       const todayIncreaseValue = Number(todayIncrease.innerText) + _offsetNumber
@@ -364,33 +365,43 @@
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
       localStorage.setItem(`${plan}Input`, '');
-      const duration = countTime(plan, 'destroy');
       if (buyPartInput.value) {
+        const sourceNumber = setNumberOfDigits(totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan])
+        addCompletedRecord('part', `${buyPriceInput.value * buyPartInput.value} / ${buyPriceInput.value}<br/>${sourceNumber}${_offsetNumber > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${setNumberOfDigits(_offsetNumber)}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(setNumberOfDigits(_offsetNumber))}</b>`}`, /^[0-9:]+$/.test(duration) ? duration : '')
         insertBuyPartToSellPriceInput(plan, buyPriceInput.value, buyPartInput.value)
         buyPartInput.value = '';
       } else {
-        addCompletedRecord(plan, buyPriceInput.value, duration)
+        addCompletedRecord(plan, buyPriceInput.value, /^[0-9:]+$/.test(duration) ? duration : '')
+        countTime(plan, 'destroy');
       }
       buyPriceInput.value = '';
       document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
-      
-    })    
+
+    })
   }
 
   // 追加交易完成记录
   function addCompletedRecord(plan, buyPrice, duration) {
-    const completedRecord = JSON.parse(localStorage.getItem('completedRecord')||'[]');
-    completedRecord.push({
-      soldText: soldRecord[plan],
-      buyedText: `${totalMoney[plan]} / ${buyPrice}<br/>${totalNumber[plan]}${offsetNumber[plan] > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`}`,
-      time: `${formatDate(new Date())}<br/>${duration}`
-    })
+    const completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
+    if (plan === 'part') {
+      completedRecord.push({
+        soldText: 'buy part',
+        buyedText: buyPrice,
+        time: `${formatDate(new Date())}<br/>${duration}`
+      })
+    } else {
+      completedRecord.push({
+        soldText: soldRecord[plan],
+        buyedText: `${totalMoney[plan]} / ${buyPrice}<br/>${totalNumber[plan]}${offsetNumber[plan] > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`}`,
+        time: `${formatDate(new Date())}<br/>${duration}`
+      })
+    }
     localStorage.setItem('completedRecord', JSON.stringify(completedRecord))
   }
 
   // 展示已完成交易记录
   function showCompletedRecord(type) {
-    let completedRecord = JSON.parse(localStorage.getItem('completedRecord')||'[]');
+    let completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
     let _completedRecord = [...completedRecord]
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
@@ -405,12 +416,12 @@
     }
     const _html = `<table style="border-collapse: collapse;">
         ${_completedRecord.map(c => (
-          `<tr>
+      `<tr>
             <td style="width:32vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
             <td style="width:42vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
             <td style="width:26vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
           </tr>`
-        )).join('')}
+    )).join('')}
       </table>`
     completeRecordContent.innerHTML = _completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
     completeRecordPopup.style.display = 'block'
@@ -422,35 +433,34 @@
     const monthIncreaseLabel = document.getElementById('monthIncreaseLabel')
     const todayIncreaseLabel = document.getElementById('todayIncreaseLabel')
     const completeRecordPopup = document.getElementById('completeRecordPopup')
-    // const completeRecordCloseBtn = document.getElementById('completeRecordCloseBtn')
     const lastPriceDom = document.getElementById('_spanLastPrice');
     const toggleBtn = document.getElementById('toggleBtn')
     totalIncreaseLabel.addEventListener('click', () => {
       showCompletedRecord()
       lastPriceDom.style.display = 'none'
       toggleBtn.style.display = 'none'
-    })    
+    })
     monthIncreaseLabel.addEventListener('click', () => {
       showCompletedRecord('month')
       lastPriceDom.style.display = 'none'
       toggleBtn.style.display = 'none'
-    })    
+    })
     todayIncreaseLabel.addEventListener('click', () => {
       showCompletedRecord('today')
       lastPriceDom.style.display = 'none'
       toggleBtn.style.display = 'none'
-    })    
-    // completeRecordCloseBtn.addEventListener('click', () => {
+    })
     completeRecordPopup.addEventListener('dblclick', () => {
       completeRecordPopup.style.display = 'none'
       lastPriceDom.style.display = 'block'
       toggleBtn.style.display = 'block'
-    })    
+    })
   }
 
   function insertBuyPartToSellPriceInput(plan, price, number) {
     const sellPriceInput = document.getElementById('sellPriceInput')
-    sellPriceInput.value = `_${plan.slice(-1)}${price}*${number}(${setNumberOfDigits(totalNumber[plan] * Number(number) / buyedTotalNumber[plan])})=\n` + sellPriceInput.value
+    const buyPartStr = `_${plan.slice(-1)}${price}*${number}(${setNumberOfDigits(totalNumber[plan] * Number(number) / buyedTotalNumber[plan])})`
+    sellPriceInput.value = `${buyPartStr}=\n` + sellPriceInput.value
     sellPriceInput.dispatchEvent(new Event('change'));
   }
 
@@ -461,7 +471,7 @@
 
   // 根据value生成对应颜色的html
   function setNumberOfDigits(value, pos = 3) {
-    return Number(value).toFixed(pos+1).slice(0, -1)
+    return Number(value).toFixed(pos + 1).slice(0, -1)
   }
 
   // 显示/隐藏监听面板
@@ -482,15 +492,15 @@
     const winNumber = document.getElementById(`${plan}WinNumber`)
     const buyPriceInput = document.getElementById(`${plan}Input`);
     buyPriceInput.value = localStorage.getItem(`${plan}Input`) || '';
-    
+
     buyPriceInput.addEventListener('change', () => {
       if (!totalMoney[plan] || !buyPriceInput.value) {
         winNumber.innerHTML = ''
       } else {
         const buyPrice = buyPriceInput.value
-        const fee = Number(setNumberOfDigits(totalMoney[plan]*FEE_RATE/buyPrice))
-        buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan]/buyPrice))
-        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan]-totalNumber[plan]-fee))
+        const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
+        buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
+        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
         winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber[plan]}` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
@@ -503,16 +513,16 @@
     const planBSellHighResult = document.getElementById(`${plan}SellHighResult`);
     const buyPriceInput = document.getElementById(`${plan}Input`);
     sellHighInput.value = localStorage.getItem(`${plan}SellHighInput`) || '';
-    
+
     sellHighInput.addEventListener('change', () => {
       const sellHightPrice = Number(sellHighInput.value)
       if (!totalMoney[plan] || !buyPriceInput.value || !sellHightPrice) {
-        planBSellHighResult.innerHTML  = ''
+        planBSellHighResult.innerHTML = ''
       } else {
-        const sellHighTotalMoney = Number(setNumberOfDigits(sellHightPrice * (totalNumber[plan] + offsetNumber[plan]) * (1-FEE_RATE)))
-        planBSellHighResult.innerHTML = `${setNumberOfDigits(totalMoney[plan])} ${sellHighTotalMoney > totalMoney[plan] ? '+' : '-'} <b style="color: ${sellHighTotalMoney > totalMoney[plan] ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan]))}(${setNumberOfDigits(Math.abs(sellHighTotalMoney-totalMoney[plan])*(1-FEE_RATE)/Number(buyPriceInput.value))}HC)</b> = ${sellHighTotalMoney}`
+        const sellHighTotalMoney = Number(setNumberOfDigits(sellHightPrice * (totalNumber[plan] + offsetNumber[plan]) * (1 - FEE_RATE)))
+        planBSellHighResult.innerHTML = `${setNumberOfDigits(totalMoney[plan])} ${sellHighTotalMoney > totalMoney[plan] ? '+' : '-'} <b style="color: ${sellHighTotalMoney > totalMoney[plan] ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(Math.abs(sellHighTotalMoney - totalMoney[plan]))}(${setNumberOfDigits(Math.abs(sellHighTotalMoney - totalMoney[plan]) * (1 - FEE_RATE) / Number(buyPriceInput.value))}HC)</b> = ${sellHighTotalMoney}`
       }
-      localStorage.setItem(`${plan}SellHighInput`,sellHighInput.value);
+      localStorage.setItem(`${plan}SellHighInput`, sellHighInput.value);
     })
   }
 
@@ -524,9 +534,9 @@
       return
     }
     const suggestPriceList = []
-    for(let i = 0; i < SUGGEST_NUMBER_GROUP.length; i++) {
-      const price = setNumberOfDigits(totalMoney[plan]*(1-FEE_RATE)/(totalNumber[plan]*(1+SUGGEST_NUMBER_GROUP[i])))
-      suggestPriceList.push(`<b style="color: ${SUGGEST_NUMBER_GROUP[i] < 0 ? WARNING_COLOR : DEFAULT_COLOR}">${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(${SUGGEST_NUMBER_GROUP[i] > 0 ? '+' : ''}${Math.floor(totalNumber[plan]*SUGGEST_NUMBER_GROUP[i])})` : ''}</b>`)
+    for (let i = 0; i < SUGGEST_NUMBER_GROUP.length; i++) {
+      const price = setNumberOfDigits(totalMoney[plan] * (1 - FEE_RATE) / (totalNumber[plan] * (1 + SUGGEST_NUMBER_GROUP[i])))
+      suggestPriceList.push(`<b style="color: ${SUGGEST_NUMBER_GROUP[i] < 0 ? WARNING_COLOR : DEFAULT_COLOR}">${price}${SUGGEST_NUMBER_GROUP[i] !== 0 ? `(${SUGGEST_NUMBER_GROUP[i] > 0 ? '+' : ''}${Math.floor(totalNumber[plan] * SUGGEST_NUMBER_GROUP[i])})` : ''}</b>`)
     }
     suggestPriceListDom.innerHTML = `<span style="margin-right: 15px;white-space: nowrap">${suggestPriceList.join('</span><span style="margin-right: 15px;white-space: nowrap">')}</span>`
   }
@@ -541,7 +551,7 @@
       } else {
         countTime(plan, 'destroy')
       }
-    })    
+    })
   }
 
   // 开启/关闭 计时器
@@ -549,11 +559,9 @@
   function countTime(plan, type) {
     const countTimeBox = document.getElementById(`${plan}CountTimeBox`)
     let startDemoTime = Number(localStorage.getItem(`${plan}StartTime`) || 0)
-    let lastDuration = ''
     if (type === 'new') {
       startDemoTime = new Date().getTime()
     } else if (type === 'destroy') {
-      lastDuration = startDemoTime ? formatTime(new Date().getTime() - startDemoTime) : ''
       startDemoTime = 0
     }
     if (startDemoTime) {
@@ -566,7 +574,6 @@
       countTimeBox.innerHTML = COUNT_DEFAULT_TEXT
     }
     localStorage.setItem(`${plan}StartTime`, startDemoTime)
-    return lastDuration
   }
 
   // 格式化时间格式
@@ -584,7 +591,7 @@
   }
 
   // 格式化时间格式
-  function formatDate(date, format='YYYY-MM-DD hh:mm') {
+  function formatDate(date, format = 'YYYY-MM-DD hh:mm') {
     const year = date.getFullYear()
     const month = `0${date.getMonth() + 1}`.slice(-2)
     const day = `0${date.getDate()}`.slice(-2)
@@ -601,7 +608,7 @@
   }
 
   // 朗读
-  const speakHelper = (function() {
+  const speakHelper = (function () {
     const speech = new SpeechSynthesisUtterance();
     const SPEAK_TIMES = 3
     let times = 0
