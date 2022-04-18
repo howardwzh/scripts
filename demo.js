@@ -295,28 +295,26 @@
 
   // 打开/关闭 编辑备注
   function addEventToEditRemark() {
-    let isEditRemark = false;
     const monitorRemark = document.getElementById('monitorRemark');
     const monitorRemarkTextarea = document.getElementById('monitorRemarkTextarea');
     monitorRemark.innerText = localStorage.getItem('monitorRemark') || '备注';
 
-    monitorRemark.addEventListener('dblclick', () => { 
-      isEditRemark = !isEditRemark;
-      if (isEditRemark) {
-        monitorRemarkTextarea.style.display = 'block'
-        monitorRemarkTextarea.value = monitorRemark.innerText;
-        monitorRemark.innerText = '编辑完成后双击保存';
-      } else {
-        monitorRemarkTextarea.style.display = 'none';
-        monitorRemark.innerText = monitorRemarkTextarea.value || '备注';
-        localStorage.setItem('monitorRemark', monitorRemark.innerText);
-      }
-    })    
+    monitorRemark.addEventListener('dblclick', () => {
+      monitorRemark.style.display = "none";
+      monitorRemarkTextarea.style.display = 'block';
+      monitorRemarkTextarea.value = monitorRemark.innerText;
+      monitorRemarkTextarea.focus()
+    })
+    monitorRemarkTextarea.addEventListener('blur', () => { 
+      monitorRemarkTextarea.style.display = 'none';
+      monitorRemark.style.display = "block";
+      monitorRemark.innerText = monitorRemarkTextarea.value || '备注';
+      localStorage.setItem('monitorRemark', monitorRemark.innerText);
+    })
   }
 
   // 监听 总计/本月/今日 新增
   function addEventToIncrease(increaseScope, nowDate) {
-    let isEditIncrease = false;
     const lastDate = localStorage.getItem(`${increaseScope}LastDate`);
     const increaseBox = document.getElementById(`${increaseScope}Box`);
     const increase = document.getElementById(`${increaseScope}`);
@@ -330,17 +328,16 @@
     }
 
     increaseBox.addEventListener('dblclick', () => { 
-      isEditIncrease = !isEditIncrease;
-      if (isEditIncrease) {
-        increase.style.display = 'none'
-        increaseInput.style.display = 'inline-block'
-        increaseInput.value = increase.innerText;
-      } else {
-        increase.style.display = 'inline-block'
-        increaseInput.style.display = 'none';
-        increase.innerHTML = makeSuccessOrDangerHtml(increaseInput.value || '0');
-        localStorage.setItem(increaseScope, increase.innerText);
-      }
+      increase.style.display = 'none'
+      increaseInput.style.display = 'inline-block'
+      increaseInput.value = increase.innerText;
+      increaseInput.focus()
+    })
+    increaseInput.addEventListener('blur', () => { 
+      increase.style.display = 'inline-block'
+      increaseInput.style.display = 'none';
+      increase.innerHTML = makeSuccessOrDangerHtml(increaseInput.value || '0');
+      localStorage.setItem(increaseScope, increase.innerText);
     })    
   }
 
@@ -444,7 +441,7 @@
       toggleBtn.style.display = 'none'
     })    
     // completeRecordCloseBtn.addEventListener('click', () => {
-      completeRecordPopup.addEventListener('dblclick', () => {
+    completeRecordPopup.addEventListener('dblclick', () => {
       completeRecordPopup.style.display = 'none'
       lastPriceDom.style.display = 'block'
       toggleBtn.style.display = 'block'
