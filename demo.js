@@ -37,8 +37,9 @@
     setTotalDays();
     pushPriceToHistory();
     addEventToClosePanel();
-    addEventToEditRemark();
     addEventToCompleteRecord();
+    toggleContenteditable('prayerToGod', '🙏🍀❤️BB自由❤️🍀🙏');
+    toggleContenteditable('monitorRemark');
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
@@ -83,13 +84,13 @@
     }).join('')
       }
           <p>
-            <span id="totalIncreaseBox" style="display: inline-block; width: 32%"><span id="totalIncreaseLabel"><span id="totalDaysBox"></span>日:</span> <b id="totalIncrease">0</b><input id="totalIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="monthIncreaseBox" style="display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b><input id="monthIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
-            <span id="todayIncreaseBox" style="display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b><input id="todayIncreaseInput" style="display: none; width: 50px;font-size: 14px;" type="text" /></span>
+            <span id="totalIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="totalIncreaseLabel"><span id="totalDaysBox"></span>日:</span> <b id="totalIncrease">0</b></span>
+            <span id="monthIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b></span>
+            <span id="todayIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b></span>
           </p>
+          <div id="prayerToGod"></div>
+          <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left;">备注</div>
           <p id="debugMsg"></p>
-          <div id="monitorRemark" style="padding: 0; text-align: left;">备注</div>
-          <textarea id="monitorRemarkTextarea" style="display: none;font-size: 14px; width: 100%;" rows="5"></textarea>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
             <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
             <button id="completeRecordCloseBtn" style="display: none;position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
@@ -276,7 +277,7 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    showDebugMsg(`🙏🍀❤️BB自由❤️🍀🙏`);
+    // showDebugMsg(`🙏🍀❤️BB自由❤️🍀🙏`);
   }
 
   // debug显示信息
@@ -293,52 +294,37 @@
     });
   }
 
-  // 打开/关闭 编辑备注
-  function addEventToEditRemark() {
-    const monitorRemark = document.getElementById('monitorRemark');
-    const monitorRemarkTextarea = document.getElementById('monitorRemarkTextarea');
-    monitorRemark.innerText = localStorage.getItem('monitorRemark') || '备注';
-
-    monitorRemark.addEventListener('dblclick', () => {
-      monitorRemark.style.display = "none";
-      monitorRemarkTextarea.style.display = 'block';
-      monitorRemarkTextarea.value = monitorRemark.innerText;
-      monitorRemarkTextarea.focus()
-    })
-    monitorRemarkTextarea.addEventListener('blur', () => {
-      monitorRemarkTextarea.style.display = 'none';
-      monitorRemark.style.display = "block";
-      monitorRemark.innerText = monitorRemarkTextarea.value || '备注';
-      localStorage.setItem('monitorRemark', monitorRemark.innerText);
-    })
-  }
-
   // 监听 总计/本月/今日 新增
   function addEventToIncrease(increaseScope, nowDate) {
     const lastDate = localStorage.getItem(`${increaseScope}LastDate`);
-    const increaseBox = document.getElementById(`${increaseScope}Box`);
     const increase = document.getElementById(`${increaseScope}`);
-    const increaseInput = document.getElementById(`${increaseScope}Input`);
+    toggleContenteditable(increaseScope)
     if (nowDate !== lastDate) {
       increase.innerText = 0
       localStorage.setItem(increaseScope, 0);
       localStorage.setItem(`${increaseScope}LastDate`, nowDate);
     } else {
-      increase.innerHTML = makeSuccessOrDangerHtml(localStorage.getItem(increaseScope) || '0');
+      increase.innerText = localStorage.getItem(increaseScope) || '0'
+      setSuccessOrDangerStyleToDom(increase, increase.innerText);
     }
+  }
 
-    increaseBox.addEventListener('dblclick', () => {
-      increase.style.display = 'none'
-      increaseInput.style.display = 'inline-block'
-      increaseInput.value = increase.innerText;
-      increaseInput.focus()
-    })
-    increaseInput.addEventListener('blur', () => {
-      increase.style.display = 'inline-block'
-      increaseInput.style.display = 'none';
-      increase.innerHTML = makeSuccessOrDangerHtml(increaseInput.value || '0');
-      localStorage.setItem(increaseScope, increase.innerText);
-    })
+  // 切换dom contenteditable
+  function toggleContenteditable(ids, placeholder = '') {
+    const _ids = typeof ids === 'string' ? [ids] : ids
+    for(let i = 0; i < _ids.length; i++) {
+      const id = _ids[i]
+      const dom = document.getElementById(id);
+      dom.innerText = localStorage.getItem(id) || placeholder;
+      dom.addEventListener('dblclick', () => {
+        dom.setAttribute('contenteditable', true)
+        setTimeout(() => dom.focus(), 200)
+      })
+      dom.addEventListener('blur', () => {
+        dom.setAttribute('contenteditable', false)
+        localStorage.setItem(id, dom.innerText);
+      })
+    }
   }
 
   // 监听 完成
@@ -355,12 +341,12 @@
       const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
       if (!buyPriceInput.value || !_offsetNumber) return
       const duration = document.getElementById(`${plan}CountTimeBox`).innerText
-      const totalIncreaseValue = Number(totalIncrease.innerText) + _offsetNumber
-      const monthIncreaseValue = Number(monthIncrease.innerText) + _offsetNumber
-      const todayIncreaseValue = Number(todayIncrease.innerText) + _offsetNumber
-      totalIncrease.innerHTML = makeSuccessOrDangerHtml(totalIncreaseValue);
-      monthIncrease.innerHTML = makeSuccessOrDangerHtml(monthIncreaseValue);
-      todayIncrease.innerHTML = makeSuccessOrDangerHtml(todayIncreaseValue);
+      totalIncrease.innerText = Number(totalIncrease.innerText) + _offsetNumber
+      monthIncrease.innerText = Number(monthIncrease.innerText) + _offsetNumber
+      todayIncrease.innerText = Number(todayIncrease.innerText) + _offsetNumber
+      setSuccessOrDangerStyleToDom(totalIncrease, totalIncrease.innerText);
+      setSuccessOrDangerStyleToDom(monthIncrease, monthIncrease.innerText);
+      setSuccessOrDangerStyleToDom(todayIncrease, todayIncrease.innerText);
       localStorage.setItem('totalIncrease', totalIncrease.innerText);
       localStorage.setItem('monthIncrease', monthIncrease.innerText);
       localStorage.setItem('todayIncrease', todayIncrease.innerText);
@@ -465,8 +451,8 @@
   }
 
   // 根据value生成对应颜色的html
-  function makeSuccessOrDangerHtml(value) {
-    return `<b style="color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(value)}</b>`
+  function setSuccessOrDangerStyleToDom(dom, value) {
+    dom.setAttribute('style',`color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}`)
   }
 
   // 根据value生成对应颜色的html
