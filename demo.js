@@ -89,7 +89,7 @@
             <span id="todayIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b></span>
           </p>
           <div id="prayerToGod"></div>
-          <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left;">备注</div>
+          <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left; margin-top: 20px;">备注</div>
           <p id="debugMsg"></p>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
             <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
@@ -318,11 +318,15 @@
       dom.innerText = localStorage.getItem(id) || placeholder;
       dom.addEventListener('dblclick', () => {
         dom.setAttribute('contenteditable', true)
+        dom.style.border = "1px solid #999"
+        dom.style.padding = "5px"
         setTimeout(() => dom.focus(), 200)
       })
       dom.addEventListener('blur', () => {
         dom.setAttribute('contenteditable', false)
         localStorage.setItem(id, dom.innerText);
+        dom.style.border = "none"
+        dom.style.padding = "initial"
       })
     }
   }
