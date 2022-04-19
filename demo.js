@@ -321,6 +321,7 @@
         dom.style.border = "1px solid #aaa"
         dom.style.padding = "5px"
         dom.style.borderRadius = "3px"
+        setTimeout(() => dom.focus(), 300)
       })
       dom.addEventListener('blur', () => {
         dom.setAttribute('contenteditable', false)
