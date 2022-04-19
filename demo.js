@@ -318,9 +318,9 @@
       dom.innerText = localStorage.getItem(id) || placeholder;
       dom.addEventListener('dblclick', () => {
         dom.setAttribute('contenteditable', true)
-        dom.style.border = "1px solid #999"
+        dom.style.border = "1px solid #aaa"
         dom.style.padding = "5px"
-        setTimeout(() => dom.focus(), 200)
+        dom.style.borderRadius = "3px"
       })
       dom.addEventListener('blur', () => {
         dom.setAttribute('contenteditable', false)
