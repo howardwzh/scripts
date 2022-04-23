@@ -304,7 +304,7 @@
       localStorage.setItem(increaseScope, 0);
       localStorage.setItem(`${increaseScope}LastDate`, nowDate);
     } else {
-      increase.innerText = localStorage.getItem(increaseScope) || '0'
+      increase.innerText = setNumberOfDigits(localStorage.getItem(increaseScope) || '0')
       setSuccessOrDangerStyleToDom(increase, increase.innerText);
     }
   }
@@ -343,7 +343,7 @@
 
 
     confirmDoneBtn.addEventListener('dblclick', () => {
-      const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
+      const _offsetNumber = setNumberOfDigits((buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan])
       if (!buyPriceInput.value || !_offsetNumber) return
       const duration = document.getElementById(`${plan}CountTimeBox`).innerText
       totalIncrease.innerText = Number(totalIncrease.innerText) + _offsetNumber
