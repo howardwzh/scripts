@@ -205,7 +205,7 @@
         lastPlan = newPlan
       }
       for (let y = 0; y < ALL_PLANS.length; y++) {
-        document.getElementById(`${ALL_PLANS[y]}TotalBox`).innerText = totalMoney[ALL_PLANS[y]] ? `${setNumberOfDigits(totalMoney[ALL_PLANS[y]])} | ${totalNumber[ALL_PLANS[y]]}` : ''
+        document.getElementById(`${ALL_PLANS[y]}TotalBox`).innerText = totalMoney[ALL_PLANS[y]] ? `${setNumberOfDigits(totalMoney[ALL_PLANS[y]])} | ${setNumberOfDigits(totalNumber[ALL_PLANS[y]])}` : ''
         computeSuggestPrice(ALL_PLANS[y])
         document.getElementById(`${ALL_PLANS[y]}Input`).dispatchEvent(new Event('change'));
         hasSold = hasSold || !!totalMoney[ALL_PLANS[y]]
@@ -234,7 +234,7 @@
       }[buySign]
       result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
-        const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
+        const lumpSum = price * number * (1 - sign * FEE_RATE) + Number(extraMoney)
         result += `=${lumpSum}`
         if (!hash) {
           const _number = buySign === '_' ? _buyPartSource : number
@@ -343,12 +343,12 @@
 
 
     confirmDoneBtn.addEventListener('dblclick', () => {
-      const _offsetNumber = setNumberOfDigits((buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan])
+      const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
       if (!buyPriceInput.value || !_offsetNumber) return
       const duration = document.getElementById(`${plan}CountTimeBox`).innerText
-      totalIncrease.innerText = Number(totalIncrease.innerText) + _offsetNumber
-      monthIncrease.innerText = Number(monthIncrease.innerText) + _offsetNumber
-      todayIncrease.innerText = Number(todayIncrease.innerText) + _offsetNumber
+      totalIncrease.innerText = setNumberOfDigits(Number(totalIncrease.innerText) + _offsetNumber)
+      monthIncrease.innerText = setNumberOfDigits(Number(monthIncrease.innerText) + _offsetNumber)
+      todayIncrease.innerText = setNumberOfDigits(Number(todayIncrease.innerText) + _offsetNumber)
       setSuccessOrDangerStyleToDom(totalIncrease, totalIncrease.innerText);
       setSuccessOrDangerStyleToDom(monthIncrease, monthIncrease.innerText);
       setSuccessOrDangerStyleToDom(todayIncrease, todayIncrease.innerText);
