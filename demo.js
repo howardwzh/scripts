@@ -226,7 +226,7 @@
     sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
-      const _buyPartSource = setNumberOfDigits(buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource)
+      const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
       const sign = {
         '-': -1,
         '_': 0,
@@ -234,7 +234,7 @@
       }[buySign]
       result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
-        const lumpSum = price * number * (1 - sign * FEE_RATE) + Number(extraMoney)
+        const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
         if (!hash) {
           const _number = buySign === '_' ? _buyPartSource : number
