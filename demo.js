@@ -358,7 +358,17 @@
       localStorage.setItem(`${plan}Input`, '');
       if (buyPartInput.value) {
         const sourceNumber = setNumberOfDigits(totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan])
-        addCompletedRecord('part', `${buyPriceInput.value * buyPartInput.value} / ${buyPriceInput.value}<br/>${sourceNumber}${_offsetNumber > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${setNumberOfDigits(_offsetNumber)}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(setNumberOfDigits(_offsetNumber))}</b>`}`, /^[0-9:]+$/.test(duration) ? duration : '')
+        addCompletedRecord(
+          'part', 
+          buyPriceInput.value,
+           /^[0-9:]+$/.test(duration) ? duration : '',
+          {
+            totalMoney: buyPriceInput.value * buyPartInput.value,
+            totalNumber: sourceNumber,
+            offsetNumber: _offsetNumber,
+            buyPrice: buyPriceInput.value
+           }
+          )
         insertBuyPartToSellPriceInput(plan, buyPriceInput.value, buyPartInput.value)
         buyPartInput.value = '';
       } else {
@@ -367,36 +377,61 @@
       }
       buyPriceInput.value = '';
       document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
-
     })
   }
 
   // 追加交易完成记录
-  function addCompletedRecord(plan, buyPrice, duration) {
+  function addCompletedRecord(plan, buyPrice, duration, buyedInfo) {
     const completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
     if (plan === 'part') {
       completedRecord.push({
         soldText: 'buy part',
-        buyedText: buyPrice,
-        time: `${formatDate(new Date())}<br/>${duration}`
+        time: `${formatDate(new Date())}<br/>${duration}`,
+        buyedInfo
       })
     } else {
       completedRecord.push({
         soldText: soldRecord[plan],
-        buyedText: `${totalMoney[plan]} / ${buyPrice}<br/>${totalNumber[plan]}${offsetNumber[plan] > 0 ? ` + <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : ` - <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`}`,
-        time: `${formatDate(new Date())}<br/>${duration}`
+        time: `${formatDate(new Date())}<br/>${duration}`,
+        buyedInfo: {
+          totalMoney: totalMoney[plan],
+          totalNumber: totalNumber[plan],
+          offsetNumber: offsetNumber[plan],
+          buyPrice
+        },
       })
     }
     localStorage.setItem('completedRecord', JSON.stringify(completedRecord))
   }
 
+  // 生成正负数值html
+  function makePositiveOrNegative(number, bigFontSize) {
+    return number > 0 ? `<b style="color:${SUCCESS_COLOR}"> + ${makeBiggerInteger(setNumberOfDigits(number), bigFontSize)}</b>` : `<b style="color:${DANGER_COLOR}"> - ${makeBiggerInteger(Math.abs(setNumberOfDigits(number)), bigFontSize)}</b>`
+  }
+
+  // makeBuyerText
+  function makeBuyerText({totalMoney, totalNumber, offsetNumber, buyPrice}) {
+    return `${setNumberOfDigits(totalMoney)} / ${buyPrice}<br/>${totalNumber}${makePositiveOrNegative(offsetNumber)}`
+  }
+
+  // makeBiggerInteger
+  function makeBiggerInteger(number, bigFontSize = '20px') { 
+    const [integer,  decimal] = setNumberOfDigits(number).split('.')
+    return `<span style="font-size: ${bigFontSize}">${integer}</span>.${decimal}`
+   }
+
   // 展示已完成交易记录
-  function showCompletedRecord(type) {
+  function showCompletedRecord(type = 'total') {
     let completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
     let _completedRecord = [...completedRecord]
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
-    if (type) {
+    const increaseGroup = {
+      total: document.getElementById('totalIncrease').innerText,
+      month: document.getElementById('monthIncrease').innerText,
+      today: document.getElementById('todayIncrease').innerText,
+    }
+    if (type !== 'total') {
       const keyDate = type === 'month' ? formatDate(new Date(), "YYYY-MM") : formatDate(new Date(), "YYYY-MM-DD")
       _completedRecord = []
       completedRecord.map(c => {
@@ -405,15 +440,15 @@
         }
       })
     }
-    const _html = `<table style="border-collapse: collapse;">
+    const _html = `<div style="padding-top: 48px"><h5 style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc">${makePositiveOrNegative(increaseGroup[type])}</h5><table style="border-collapse: collapse;">
         ${_completedRecord.map(c => (
       `<tr>
             <td style="width:32vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
-            <td style="width:42vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedText}</td>
+            <td style="width:42vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
             <td style="width:26vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
           </tr>`
     )).join('')}
-      </table>`
+      </table></div>`
     completeRecordContent.innerHTML = _completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
     completeRecordPopup.style.display = 'block'
   }
@@ -492,7 +527,7 @@
         const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
         buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
         offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
-        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${offsetNumber[plan] > 0 ? `+ <b style="color:${SUCCESS_COLOR}">${offsetNumber[plan]}</b>` : `- <b style="color:${DANGER_COLOR}">${Math.abs(offsetNumber[plan])}</b>`} = ${buyedTotalNumber[plan]}` : ''
+        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '16px')} = ${buyedTotalNumber[plan]}` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
