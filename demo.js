@@ -304,8 +304,8 @@
       localStorage.setItem(increaseScope, 0);
       localStorage.setItem(`${increaseScope}LastDate`, nowDate);
     } else {
-      increase.innerText = setNumberOfDigits(localStorage.getItem(increaseScope) || '0')
-      setSuccessOrDangerStyleToDom(increase, increase.innerText);
+      increase.innerText = setNumberOfDigits(localStorage.getItem(increaseScope) || 0)
+      setSuccessOrDangerStyleToDom(increase);
     }
   }
 
@@ -346,15 +346,21 @@
       const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
       if (!buyPriceInput.value || !_offsetNumber) return
       const duration = document.getElementById(`${plan}CountTimeBox`).innerText
-      totalIncrease.innerText = setNumberOfDigits(Number(totalIncrease.innerText) + _offsetNumber)
-      monthIncrease.innerText = setNumberOfDigits(Number(monthIncrease.innerText) + _offsetNumber)
-      todayIncrease.innerText = setNumberOfDigits(Number(todayIncrease.innerText) + _offsetNumber)
-      setSuccessOrDangerStyleToDom(totalIncrease, totalIncrease.innerText);
-      setSuccessOrDangerStyleToDom(monthIncrease, monthIncrease.innerText);
-      setSuccessOrDangerStyleToDom(todayIncrease, todayIncrease.innerText);
-      localStorage.setItem('totalIncrease', totalIncrease.innerText);
-      localStorage.setItem('monthIncrease', monthIncrease.innerText);
-      localStorage.setItem('todayIncrease', todayIncrease.innerText);
+      const oldTotalIncreaseNumber = localStorage.getItem('totalIncrease');
+      const oldMonthIncreaseNumber = localStorage.getItem('monthIncrease');
+      const oldTodayIncreaseNumber = localStorage.getItem('todayIncrease');
+      const totalIncreaseNumber = setNumberOfDigits(Number(oldTotalIncreaseNumber) + _offsetNumber)
+      const monthIncreaseNumber = setNumberOfDigits(Number(oldMonthIncreaseNumber) + _offsetNumber)
+      const todayIncreaseNumber = setNumberOfDigits(Number(oldTodayIncreaseNumber) + _offsetNumber)
+      totalIncrease.innerText = totalIncreaseNumber
+      monthIncrease.innerText = monthIncreaseNumber
+      todayIncrease.innerText = todayIncreaseNumber
+      setSuccessOrDangerStyleToDom(totalIncrease);
+      setSuccessOrDangerStyleToDom(monthIncrease);
+      setSuccessOrDangerStyleToDom(todayIncrease);
+      localStorage.setItem('totalIncrease', totalIncreaseNumber);
+      localStorage.setItem('monthIncrease', monthIncreaseNumber);
+      localStorage.setItem('todayIncrease', todayIncreaseNumber);
       localStorage.setItem(`${plan}Input`, '');
       if (buyPartInput.value) {
         const sourceNumber = setNumberOfDigits(totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan])
@@ -404,20 +410,20 @@
     localStorage.setItem('completedRecord', JSON.stringify(completedRecord))
   }
 
-  // 生成正负数值html
-  function makePositiveOrNegative(number, bigFontSize) {
-    return number > 0 ? `<b style="color:${SUCCESS_COLOR}"> + ${makeBiggerInteger(setNumberOfDigits(number), bigFontSize)}</b>` : `<b style="color:${DANGER_COLOR}"> - ${makeBiggerInteger(Math.abs(setNumberOfDigits(number)), bigFontSize)}</b>`
-  }
-
   // makeBuyerText
   function makeBuyerText({totalMoney, totalNumber, offsetNumber, buyPrice}) {
     return `${setNumberOfDigits(totalMoney)} / ${buyPrice}<br/>${totalNumber}${makePositiveOrNegative(offsetNumber)}`
   }
 
+  // 生成正负数值html
+  function makePositiveOrNegative(number, bigFontSize, smallFontSize, unit) {
+    return number > 0 ? `<b style="color:${SUCCESS_COLOR}"> + ${makeBiggerInteger(setNumberOfDigits(number), bigFontSize, smallFontSize)}</b>` : `<b style="color:${DANGER_COLOR}"> - ${makeBiggerInteger(Math.abs(setNumberOfDigits(number)), bigFontSize, smallFontSize)}${unit||''}</b>`
+  }
+
   // makeBiggerInteger
-  function makeBiggerInteger(number, bigFontSize = '20px') { 
+  function makeBiggerInteger(number, bigFontSize = '20px', smallFontSize = '13px') { 
     const [integer,  decimal] = setNumberOfDigits(number).split('.')
-    return `<span style="font-size: ${bigFontSize}">${integer}</span>.${decimal}`
+    return `<span style="font-size: ${bigFontSize}">${integer}</span>.<span style="font-size: ${smallFontSize}">${decimal}</span>`
    }
 
   // 展示已完成交易记录
@@ -427,9 +433,9 @@
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
     const increaseGroup = {
-      total: document.getElementById('totalIncrease').innerText,
-      month: document.getElementById('monthIncrease').innerText,
-      today: document.getElementById('todayIncrease').innerText,
+      total: localStorage.getItem('totalIncrease'),
+      month: localStorage.getItem('monthIncrease'),
+      today: localStorage.getItem('todayIncrease'),
     }
     if (type !== 'total') {
       const keyDate = type === 'month' ? formatDate(new Date(), "YYYY-MM") : formatDate(new Date(), "YYYY-MM-DD")
@@ -491,8 +497,8 @@
   }
 
   // 根据value生成对应颜色的html
-  function setSuccessOrDangerStyleToDom(dom, value) {
-    dom.setAttribute('style',`color: ${Number(value) > 0 ? SUCCESS_COLOR : DANGER_COLOR}`)
+  function setSuccessOrDangerStyleToDom(dom) {
+    dom.setAttribute('style',`color: ${Number(dom.innerText) > 0 ? SUCCESS_COLOR : DANGER_COLOR}`)
   }
 
   // 根据value生成对应颜色的html
@@ -527,7 +533,7 @@
         const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
         buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
         offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
-        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '16px')} = ${buyedTotalNumber[plan]}` : ''
+        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = ${buyedTotalNumber[plan]}` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
@@ -546,7 +552,7 @@
         planBSellHighResult.innerHTML = ''
       } else {
         const sellHighTotalMoney = Number(setNumberOfDigits(sellHightPrice * (totalNumber[plan] + offsetNumber[plan]) * (1 - FEE_RATE)))
-        planBSellHighResult.innerHTML = `${setNumberOfDigits(totalMoney[plan])} ${sellHighTotalMoney > totalMoney[plan] ? '+' : '-'} <b style="color: ${sellHighTotalMoney > totalMoney[plan] ? SUCCESS_COLOR : DANGER_COLOR}">${setNumberOfDigits(Math.abs(sellHighTotalMoney - totalMoney[plan]))}(${setNumberOfDigits(Math.abs(sellHighTotalMoney - totalMoney[plan]) * (1 - FEE_RATE) / Number(buyPriceInput.value))}HC)</b> = ${sellHighTotalMoney}`
+        planBSellHighResult.innerHTML = `${setNumberOfDigits(totalMoney[plan])} ${makePositiveOrNegative(sellHighTotalMoney - totalMoney[plan], '18px', '13px')}(${makePositiveOrNegative((sellHighTotalMoney - totalMoney[plan]) * (1 - FEE_RATE) / Number(buyPriceInput.value), '18px', '13px', 'HC')})</b> = ${sellHighTotalMoney}`
       }
       localStorage.setItem(`${plan}SellHighInput`, sellHighInput.value);
     })
