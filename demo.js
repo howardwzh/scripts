@@ -31,6 +31,7 @@
       previewResult(ALL_PLANS[i]);
       addEventToCountTimeBox(ALL_PLANS[i]);
       addEventToConfirmDoneBtn(ALL_PLANS[i]);
+      addEventToCopyNumber(ALL_PLANS[i]);
     }
     // global
     checkAllSellPrices();
@@ -386,6 +387,22 @@
     })
   }
 
+  // 监听复制数量
+  function addEventToCopyNumber(plan) {
+    const buyWinNumber = document.getElementById(`${plan}WinNumber`);
+    buyWinNumber.addEventListener('click', e => {
+      if (e.target.className === 'copyMe') {
+        const copyText = e.target.innerText;
+        navigator.clipboard.writeText(copyText);
+
+        e.target.style.border = `1px solid ${SUCCESS_COLOR}`
+        setTimeout(() => {
+          e.target.style.border = `1px solid transparent`
+        }, 1000)
+      }
+    })
+  }
+
   // 追加交易完成记录
   function addCompletedRecord(plan, buyPrice, duration, buyedInfo) {
     const completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
@@ -533,7 +550,7 @@
         const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
         buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
         offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
-        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = ${buyedTotalNumber[plan]}` : ''
+        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = <span class="copyMe">${buyedTotalNumber[plan]}</span>` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
