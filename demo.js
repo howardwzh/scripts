@@ -445,7 +445,7 @@
 
   // 展示已完成交易记录
   function showCompletedRecord(type = 'total') {
-    let completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]');
+    let completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]').reverse();
     let _completedRecord = [...completedRecord]
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
