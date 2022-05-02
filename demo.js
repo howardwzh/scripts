@@ -224,21 +224,17 @@
   // 检查卖出价格
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
-    sellPrice.replace(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
+    sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
       const plan = `plan${(whatPlan || 'A').toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
       const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
-      const sign = {
-        '-': -1,
-        '_': 0,
-        'undefined': 1
-      }[buySign]
+      const sign = buySign ? 0 : 1
       result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
         result += `=${lumpSum}`
         if (!hash) {
-          const _number = buySign === '_' ? _buyPartSource : number
+          const _number = buySign === '-' ? _buyPartSource : number
           totalNumber[plan] += (buySign ? -1 : 1) * _number
           totalMoney[plan] += (buySign ? -1 : 1) * lumpSum
           soldRecord[plan] = soldRecord[plan] ? `${soldRecord[plan]}<br/>${result.split('=')[0]}` : result.split('=')[0]
@@ -508,7 +504,7 @@
 
   function insertBuyPartToSellPriceInput(plan, price, number) {
     const sellPriceInput = document.getElementById('sellPriceInput')
-    const buyPartStr = `_${plan.slice(-1)}${price}*${number}(${setNumberOfDigits(totalNumber[plan] * Number(number) / buyedTotalNumber[plan])})`
+    const buyPartStr = `-${plan.slice(-1)}${price}*${number}(${setNumberOfDigits(totalNumber[plan] * Number(number) / buyedTotalNumber[plan])})`
     sellPriceInput.value = `${buyPartStr}=\n` + sellPriceInput.value
     sellPriceInput.dispatchEvent(new Event('change'));
   }
@@ -550,7 +546,7 @@
         const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
         buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
         offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
-        winNumber.innerHTML = buyPrice ? `${totalNumber[plan]} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = <span class="copyMe">${buyedTotalNumber[plan]}</span>` : ''
+        winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = <span class="copyMe">${buyedTotalNumber[plan]}</span>` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
