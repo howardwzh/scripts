@@ -458,7 +458,7 @@
             `<tr>
               <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
               <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
-              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color: #${DANGER_COLOR};" data-index="${i}">删除</b></td>
+              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color: #${DANGER_COLOR};font-weight: normal" data-index="${i}">删除</b></td>
             </tr>`
           ) : ''
         }).join('')}
