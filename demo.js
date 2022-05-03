@@ -334,30 +334,13 @@
     const confirmDoneBtn = document.getElementById(`${plan}DoneBtn`);
     const buyPriceInput = document.getElementById(`${plan}Input`);
     const buyPartInput = document.getElementById(`${plan}PartInput`);
-    const totalIncrease = document.getElementById('totalIncrease');
-    const monthIncrease = document.getElementById('monthIncrease');
-    const todayIncrease = document.getElementById('todayIncrease');
 
 
     confirmDoneBtn.addEventListener('dblclick', () => {
       const _offsetNumber = (buyPartInput.value ? buyPartInput.value / buyedTotalNumber[plan] : 1) * offsetNumber[plan]
       if (!buyPriceInput.value || !_offsetNumber) return
       const duration = document.getElementById(`${plan}CountTimeBox`).innerText
-      const oldTotalIncreaseNumber = localStorage.getItem('totalIncrease');
-      const oldMonthIncreaseNumber = localStorage.getItem('monthIncrease');
-      const oldTodayIncreaseNumber = localStorage.getItem('todayIncrease');
-      const totalIncreaseNumber = setNumberOfDigits(Number(oldTotalIncreaseNumber) + _offsetNumber)
-      const monthIncreaseNumber = setNumberOfDigits(Number(oldMonthIncreaseNumber) + _offsetNumber)
-      const todayIncreaseNumber = setNumberOfDigits(Number(oldTodayIncreaseNumber) + _offsetNumber)
-      totalIncrease.innerText = totalIncreaseNumber
-      monthIncrease.innerText = monthIncreaseNumber
-      todayIncrease.innerText = todayIncreaseNumber
-      setSuccessOrDangerStyleToDom(totalIncrease);
-      setSuccessOrDangerStyleToDom(monthIncrease);
-      setSuccessOrDangerStyleToDom(todayIncrease);
-      localStorage.setItem('totalIncrease', totalIncreaseNumber);
-      localStorage.setItem('monthIncrease', monthIncreaseNumber);
-      localStorage.setItem('todayIncrease', todayIncreaseNumber);
+      updateIncreaseNumber(_offsetNumber)
       localStorage.setItem(`${plan}Input`, '');
       if (buyPartInput.value) {
         const sourceNumber = setNumberOfDigits(totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan])
@@ -381,6 +364,30 @@
       buyPriceInput.value = '';
       document.getElementById(`${plan}Input`).dispatchEvent(new Event('change'));
     })
+  }
+
+  // 更新总计的数量
+  function updateIncreaseNumber (offsetNumber, nowStr) {
+    const monthStr = formatDate(new Date(), "YYYY-MM")
+    const todayStr = formatDate(new Date(), "YYYY-MM-DD")
+    const totalIncrease = document.getElementById('totalIncrease');
+    const monthIncrease = document.getElementById('monthIncrease');
+    const todayIncrease = document.getElementById('todayIncrease');
+    const oldTotalIncreaseNumber = localStorage.getItem('totalIncrease');
+    const oldMonthIncreaseNumber = localStorage.getItem('monthIncrease');
+    const oldTodayIncreaseNumber = localStorage.getItem('todayIncrease');
+    const totalIncreaseNumber = setNumberOfDigits(Number(oldTotalIncreaseNumber) + offsetNumber)
+    const monthIncreaseNumber = setNumberOfDigits(Number(oldMonthIncreaseNumber) + ((!nowStr || nowStr.indexOf(monthStr) === 0) ? offsetNumber : 0))
+    const todayIncreaseNumber = setNumberOfDigits(Number(oldTodayIncreaseNumber) + ((!nowStr || nowStr.indexOf(todayStr) === 0) ? offsetNumber : 0))
+    totalIncrease.innerText = totalIncreaseNumber
+    monthIncrease.innerText = monthIncreaseNumber
+    todayIncrease.innerText = todayIncreaseNumber
+    setSuccessOrDangerStyleToDom(totalIncrease);
+    setSuccessOrDangerStyleToDom(monthIncrease);
+    setSuccessOrDangerStyleToDom(todayIncrease);
+    localStorage.setItem('totalIncrease', totalIncreaseNumber);
+    localStorage.setItem('monthIncrease', monthIncreaseNumber);
+    localStorage.setItem('todayIncrease', todayIncreaseNumber);
   }
 
   // 监听复制数量
@@ -451,14 +458,14 @@
       today: localStorage.getItem('todayIncrease'),
     }
     const _html = `<div style="padding-top: 48px">
-      <h5 style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc">${makePositiveOrNegative(increaseGroup[type])}</h5>
+      <h5 id="recordTitleDom" style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc" data-type="${type}">${makePositiveOrNegative(increaseGroup[type])}</h5>
       <table id="completedRecordDom" style="border-collapse: collapse;">
         ${completedRecord.map((c, i) => {
           return (!keyDate || c.time.indexOf(keyDate) === 0) ? (
             `<tr>
               <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
               <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
-              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color: #${DANGER_COLOR};font-weight: normal" data-index="${i}">删除</b></td>
+              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color:${DANGER_COLOR};font-weight:normal" data-index="${i}">删除</b></td>
             </tr>`
           ) : ''
         }).join('')}
@@ -477,16 +484,35 @@
       if (!dateDom) return
       const deleteBtn = dateDom.getElementsByClassName('delete-btn')[0]
       deleteBtn.style.display = "block"
-      deleteBtn.removeEventListener('click',deleteItem)
-      deleteBtn.addEventListener('click',deleteItem)
+      deleteBtn.removeEventListener('click', deleteItem)
+      deleteBtn.addEventListener('click', deleteItem)
     })
 
     function deleteItem(e) {
-      const index = Number(e.target.dataset.index)
-      console.log(index)
-      completedRecord.splice(index, 1)
-      localStorage.setItem('completedRecord', JSON.stringify(completedRecord.reverse()))
+      const result = confirm('删除无法恢复，是否继续！')
+      if (!result) return
+      const recordTitleDom = document.getElementById('recordTitleDom')
+      const index = e.target.dataset.index
+      const newCompletedRecord = []
+      completedRecord[index].deleted = true
+      for(let i = 0; i < completedRecord.length; i++) {
+        if (!completedRecord[i].deleted) {
+          newCompletedRecord.push(completedRecord[i])
+        }
+      }
+      localStorage.setItem('completedRecord', JSON.stringify(newCompletedRecord.reverse()))
       e.target.parentElement.parentElement.style.display = "none"
+      // 更新总计
+      updateIncreaseNumber(
+        -1 * completedRecord[index].buyedInfo.offsetNumber,
+        completedRecord[index].time.split(' ')[0]
+      )
+      const increaseGroup = {
+        total: localStorage.getItem('totalIncrease'),
+        month: localStorage.getItem('monthIncrease'),
+        today: localStorage.getItem('todayIncrease'),
+      }
+      recordTitleDom.innerHTML = makePositiveOrNegative(increaseGroup[recordTitleDom.dataset.type])
     }
   }
 
