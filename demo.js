@@ -231,8 +231,8 @@
       const sign = buySign ? 0 : 1
       result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
-        const lumpSum = setNumberOfDigits(price * number * (1 - sign * FEE_RATE) + Number(extraMoney))
-        result += `=${lumpSum}`
+        const lumpSum = price * number * (1 - sign * FEE_RATE) + Number(extraMoney)
+        result += `=${setNumberOfDigits(lumpSum)}`
         if (!hash) {
           const _number = buySign === '-' ? _buyPartSource : number
           totalNumber[plan] += (buySign ? -1 : 1) * _number
@@ -343,7 +343,7 @@
       updateIncreaseNumber(_offsetNumber)
       localStorage.setItem(`${plan}Input`, '');
       if (buyPartInput.value) {
-        const sourceNumber = setNumberOfDigits(totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan])
+        const sourceNumber = totalNumber[plan] * buyPartInput.value / buyedTotalNumber[plan]
         addCompletedRecord(
           'part', 
           buyPriceInput.value,
@@ -376,12 +376,12 @@
     const oldTotalIncreaseNumber = localStorage.getItem('totalIncrease');
     const oldMonthIncreaseNumber = localStorage.getItem('monthIncrease');
     const oldTodayIncreaseNumber = localStorage.getItem('todayIncrease');
-    const totalIncreaseNumber = setNumberOfDigits(Number(oldTotalIncreaseNumber) + offsetNumber)
-    const monthIncreaseNumber = setNumberOfDigits(Number(oldMonthIncreaseNumber) + ((!nowStr || nowStr.indexOf(monthStr) === 0) ? offsetNumber : 0))
-    const todayIncreaseNumber = setNumberOfDigits(Number(oldTodayIncreaseNumber) + ((!nowStr || nowStr.indexOf(todayStr) === 0) ? offsetNumber : 0))
-    totalIncrease.innerText = totalIncreaseNumber
-    monthIncrease.innerText = monthIncreaseNumber
-    todayIncrease.innerText = todayIncreaseNumber
+    const totalIncreaseNumber = Number(oldTotalIncreaseNumber) + offsetNumber
+    const monthIncreaseNumber = Number(oldMonthIncreaseNumber) + ((!nowStr || nowStr.indexOf(monthStr) === 0) ? offsetNumber : 0)
+    const todayIncreaseNumber = Number(oldTodayIncreaseNumber) + ((!nowStr || nowStr.indexOf(todayStr) === 0) ? offsetNumber : 0)
+    totalIncrease.innerText = setNumberOfDigits(totalIncreaseNumber)
+    monthIncrease.innerText = setNumberOfDigits(monthIncreaseNumber)
+    todayIncrease.innerText = setNumberOfDigits(todayIncreaseNumber)
     setSuccessOrDangerStyleToDom(totalIncrease);
     setSuccessOrDangerStyleToDom(monthIncrease);
     setSuccessOrDangerStyleToDom(todayIncrease);
@@ -587,10 +587,10 @@
         winNumber.innerHTML = ''
       } else {
         const buyPrice = buyPriceInput.value
-        const fee = Number(setNumberOfDigits(totalMoney[plan] * FEE_RATE / buyPrice))
-        buyedTotalNumber[plan] = Number(setNumberOfDigits(totalMoney[plan] / buyPrice))
-        offsetNumber[plan] = Number(setNumberOfDigits(buyedTotalNumber[plan] - totalNumber[plan] - fee))
-        winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${fee}(fee) ${makePositiveOrNegative(offsetNumber[plan], '18px')} = <span class="copyMe">${buyedTotalNumber[plan]}</span>` : ''
+        const fee = Number(totalMoney[plan] * FEE_RATE / buyPrice)
+        buyedTotalNumber[plan] = Number(totalMoney[plan] / buyPrice)
+        offsetNumber[plan] = Number(buyedTotalNumber[plan] - totalNumber[plan] - fee)
+        winNumber.innerHTML = buyPrice ? `${setNumberOfDigits(totalNumber[plan])} + ${setNumberOfDigits(fee)}(fee) ${makePositiveOrNegative(setNumberOfDigits(offsetNumber[plan]), '18px')} = <span class="copyMe">${setNumberOfDigits(buyedTotalNumber[plan])}</span>` : ''
       }
       document.getElementById(`${plan}SellHighInput`).dispatchEvent(new Event('change'));
     })
