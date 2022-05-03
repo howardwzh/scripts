@@ -441,8 +441,8 @@
 
   // 展示已完成交易记录
   function showCompletedRecord(type = 'total') {
-    let completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]').reverse();
-    let _completedRecord = [...completedRecord]
+    const completedRecord = JSON.parse(localStorage.getItem('completedRecord') || '[]').reverse();
+    const keyDate = type === 'total' ? '' : formatDate(new Date(), (type === 'month' ? "YYYY-MM" : "YYYY-MM-DD"))
     const completeRecordPopup = document.getElementById('completeRecordPopup')
     const completeRecordContent = document.getElementById('completeRecordContent')
     const increaseGroup = {
@@ -450,26 +450,44 @@
       month: localStorage.getItem('monthIncrease'),
       today: localStorage.getItem('todayIncrease'),
     }
-    if (type !== 'total') {
-      const keyDate = type === 'month' ? formatDate(new Date(), "YYYY-MM") : formatDate(new Date(), "YYYY-MM-DD")
-      _completedRecord = []
-      completedRecord.map(c => {
-        if (c.time.indexOf(keyDate) === 0) {
-          _completedRecord.push(c)
-        }
-      })
-    }
-    const _html = `<div style="padding-top: 48px"><h5 style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc">${makePositiveOrNegative(increaseGroup[type])}</h5><table style="border-collapse: collapse;">
-        ${_completedRecord.map(c => (
-      `<tr>
-            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
-            <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
-            <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
-          </tr>`
-    )).join('')}
-      </table></div>`
-    completeRecordContent.innerHTML = _completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
+    const _html = `<div style="padding-top: 48px">
+      <h5 style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc">${makePositiveOrNegative(increaseGroup[type])}</h5>
+      <table id="completedRecordDom" style="border-collapse: collapse;">
+        ${completedRecord.map((c, i) => {
+          return (!keyDate || c.time.indexOf(keyDate) === 0) ? (
+            `<tr>
+              <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+              <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
+              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color: #${DANGER_COLOR};" data-index="${i}">删除</b></td>
+            </tr>`
+          ) : ''
+        }).join('')}
+      </table>
+    </div>`
+    completeRecordContent.innerHTML = completedRecord.length ? _html : '<b style="margin-top: calc(50vh - 50px); font-size: 18px; display: block;font-weight: normal">暂无记录</b>'
     completeRecordPopup.style.display = 'block'
+
+    const completedRecordDom = document.getElementById('completedRecordDom')
+    const allDeleteBtns = document.getElementsByClassName('date-td')
+    completedRecordDom.addEventListener('click', (e) => {
+      for (const btn of allDeleteBtns) {
+        btn.getElementsByClassName('delete-btn')[0].style.display = 'none';
+      }
+      const dateDom = e.target.className === 'date-td' ? e.target : ''
+      if (!dateDom) return
+      const deleteBtn = dateDom.getElementsByClassName('delete-btn')[0]
+      deleteBtn.style.display = "block"
+      deleteBtn.removeEventListener('click',deleteItem)
+      deleteBtn.addEventListener('click',deleteItem)
+    })
+
+    function deleteItem(e) {
+      const index = Number(e.target.dataset.index)
+      console.log(index)
+      completedRecord.splice(index, 1)
+      localStorage.setItem('completedRecord', JSON.stringify(completedRecord.reverse()))
+      e.target.parentElement.parentElement.style.display = "none"
+    }
   }
 
   // 点击关闭已完成交易记录
