@@ -425,7 +425,7 @@
 
   // makeBuyerText
   function makeBuyerText({totalMoney, totalNumber, offsetNumber, buyPrice}) {
-    return `${setNumberOfDigits(totalMoney)} / ${buyPrice}<br/>${totalNumber}${makePositiveOrNegative(offsetNumber)}`
+    return `${setNumberOfDigits(totalMoney)} / ${buyPrice}<br/>${setNumberOfDigits(totalNumber)}${makePositiveOrNegative(offsetNumber)}`
   }
 
   // 生成正负数值html
