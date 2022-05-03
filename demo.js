@@ -462,9 +462,9 @@
     const _html = `<div style="padding-top: 48px"><h5 style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc">${makePositiveOrNegative(increaseGroup[type])}</h5><table style="border-collapse: collapse;">
         ${_completedRecord.map(c => (
       `<tr>
-            <td style="width:32vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+            <td style="width:36vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
             <td style="width:42vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
-            <td style="width:26vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
+            <td style="width:22vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.time.slice(2)}</td>
           </tr>`
     )).join('')}
       </table></div>`
