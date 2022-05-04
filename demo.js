@@ -59,7 +59,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 60px 27px;
+          padding: 60px 27px 22px;
           text-align: center;
           font-size: 14px;
           font-family: Arial;
