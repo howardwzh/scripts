@@ -63,6 +63,8 @@
           text-align: center;
           font-size: 14px;
           font-family: Arial;
+          overflow: auto;
+          -webkit-text-size-adjust: 100%;
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
