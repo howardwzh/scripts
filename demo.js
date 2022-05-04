@@ -93,7 +93,6 @@
           </p>
           <div id="prayerToGod"></div>
           <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left; margin-top: 20px;">备注</div>
-          <p id="debugMsg"></p>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
             <div id="completeRecordContent" style="padding: 12px;overflow: auto; height: 100%"></div>
             <button id="completeRecordCloseBtn" style="display: none;position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
@@ -276,12 +275,6 @@
       none: 'none'
     };
     dom.style.outline = colorGroup[status];
-    // showDebugMsg(`🙏🍀❤️BB自由❤️🍀🙏`);
-  }
-
-  // debug显示信息
-  function showDebugMsg(msg) {
-    document.getElementById('debugMsg').innerText = msg;
   }
 
   // 打开/关闭 面板
