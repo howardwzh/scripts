@@ -60,7 +60,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 77px 20px 20px;
+          padding: 88px 20px 20px;
           text-align: center;
           font-size: 14px;
           font-family: Arial;
@@ -69,10 +69,10 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 16px; line-height: 20px"></div>
-          <p style="margin:16px 0 0"><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
+          <p style="margin:0 0 16px"><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
           ${ALL_PLANS.map((plan) => {
       return `
-                <p style="margin:16px 0 0">
+                <p style="margin:12px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
                     <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
@@ -111,8 +111,8 @@
     lastPriceDom.setAttribute('style', `
       position:fixed;
       z-index:7777777;
-      right:26px;
-      top: 44px;
+      right:22px;
+      top: 40px;
       background-color:#777;
       padding: 2px 7px;
       border-radius: 3px;
