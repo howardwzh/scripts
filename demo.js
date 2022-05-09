@@ -1,7 +1,8 @@
 (function () {
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
-  const ALL_PLANS = ['planA', 'planB', 'planS'] // can add more, if need
+  const ALL_PLANS = ['planA', 'planB', 'planS', 'planG'] // can add more
+  const AUTO_SIGN = 'G'
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -39,7 +40,7 @@
     pushPriceToHistory();
     addEventToClosePanel();
     addEventToCompleteRecord();
-    toggleContenteditable('prayerToGod', '🙏🍀❤️BB自由❤️🍀🙏');
+    toggleContenteditable('prayerToGod', '🙏🍀定价与等待的艺术🍀🙏');
     toggleContenteditable('monitorRemark');
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
@@ -176,8 +177,8 @@
         const bMatch = b.match(/^(#)?(-|_)?([a-zA-Z])?([0-9.]+)/)
         const aHaveHash = aMatch[1] ? 1 : 0
         const bHaveHash = bMatch[1] ? 1 : 0
-        const aPlan = (aMatch[3] || 'A').toUpperCase()
-        const bPlan = (bMatch[3] || 'A').toUpperCase()
+        const aPlan = (aMatch[3] || AUTO_SIGN).toUpperCase()
+        const bPlan = (bMatch[3] || AUTO_SIGN).toUpperCase()
         const aPrice = Number(aMatch[4])
         const bPrice = Number(bMatch[4])
 
@@ -226,7 +227,7 @@
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
     sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
-      const plan = `plan${(whatPlan || 'A').toUpperCase()}`
+      const plan = `plan${(whatPlan || AUTO_SIGN).toUpperCase()}`
       const needCount = price && number && (equalSign || lastPrice >= price)
       const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
       const sign = buySign ? 0 : 1
