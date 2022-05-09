@@ -69,10 +69,10 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 16px; line-height: 20px"></div>
-          <p style="margin:0 0 10px"><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
+          <p><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
           ${ALL_PLANS.map((plan) => {
       return `
-                <p style="margin:0">
+                <div style="margin:10px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
                     <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
@@ -83,7 +83,7 @@
                   </div>
                   <p style="margin:4px 0 0;text-align: left" id="${plan}WinNumber"></p>
                   <p style="margin: 0;text-align: left" id="${plan}SellHighResult"></p>
-                </p>
+                </div>
               `
     }).join('')
       }
