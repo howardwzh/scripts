@@ -60,7 +60,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 60px 27px 22px;
+          padding: 77px 20px 20px;
           text-align: center;
           font-size: 14px;
           font-family: Arial;
@@ -68,8 +68,8 @@
           -webkit-text-size-adjust: 100%;
           "
         >
-          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 22px; line-height: 20px"></div>
-          <p style="margin:16px 0 0"><label><span>Sell List</span><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
+          <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 16px; line-height: 20px"></div>
+          <p style="margin:16px 0 0"><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
           ${ALL_PLANS.map((plan) => {
       return `
                 <p style="margin:16px 0 0">
