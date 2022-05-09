@@ -1,8 +1,8 @@
 (function () {
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
-  const ALL_PLANS = ['planA', 'planB', 'planS', 'planG'] // can add more
-  const AUTO_SIGN = 'G'
+  const ALL_PLANS = ['planA', 'planB', 'planS', 'planV'] // can add more
+  const AUTO_SIGN = 'V'
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
