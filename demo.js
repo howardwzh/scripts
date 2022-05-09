@@ -72,7 +72,7 @@
           <p style="margin:0 0 10px"><label><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></label></p>
           ${ALL_PLANS.map((plan) => {
       return `
-                <p style="margin:8px 0 0">
+                <p style="margin:0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
                     <input placeholder="buy low" style="width: 100%; min-height: 26px;height: 26px;font-family: Arial;font-size: 14px;font-weight: 400;" type="text" id="${plan}Input"/>
@@ -99,7 +99,7 @@
             <button id="completeRecordCloseBtn" style="display: none;position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
           </div>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 80px; right: 20px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 82px; right: 20px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
