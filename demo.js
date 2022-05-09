@@ -60,7 +60,7 @@
           right:0;  
           background-color: #fff; 
           z-index: 777777;
-          padding: 82px 20px 20px;
+          padding: 80px 20px 20px;
           text-align: center;
           font-size: 14px;
           font-family: Arial;
@@ -99,7 +99,7 @@
             <button id="completeRecordCloseBtn" style="display: none;position: absolute; width: 28px; height: 28px; line-height: 28px; right: 10px; top: 10px; font-size: 28px; text-align: center; padding: 0; background-color: rgba(0,0,0,.3); color: #fff; border: none; border-radius: 14px;">×</button>
           </div>
         </div>
-        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 92px; right: 20px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
+        <button id="toggleBtn" style="position: fixed; z-index: 7777777; width: 54px; height: 54px; opacity: 0.2; top: 90px; right: 20px; font-size: 14px; padding: 7px 14px;background-color:#eef05b;border:none"></button>
       </div>
     `;
     document.body.appendChild(panel.children[0]);
