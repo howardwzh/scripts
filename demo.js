@@ -1,6 +1,7 @@
 (function () {
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
+  const TEXTAREA_ROWS = 13
   const ALL_PLANS = ['planA', 'planB', 'planS'] // can add more
   const AUTO_SIGN = ''
   const FEE_RATE = 0.0025
@@ -69,7 +70,7 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 16px; line-height: 20px"></div>
-          <div><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="12" id="sellPriceInput"></textarea></div>
+          <div><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="${TEXTAREA_ROWS}" id="sellPriceInput"></textarea></div>
           ${ALL_PLANS.map((plan) => {
             return `
                 <div style="margin:10px 0 0">
