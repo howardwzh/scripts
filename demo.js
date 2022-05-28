@@ -1,8 +1,8 @@
 (function () {
   if (!document.getElementById('_spanLastPrice')) return;
   const FIRST_DATE_TIME = new Date('2022/2/22').getTime() // Starting time
-  const ALL_PLANS = ['planA', 'planB', 'planS', 'planV'] // can add more
-  const AUTO_SIGN = 'V'
+  const ALL_PLANS = ['planA', 'planB', 'planS'] // can add more
+  const AUTO_SIGN = ''
   const FEE_RATE = 0.0025
   const DEFAULT_COLOR = '#333'
   const INFO_COLOR = '#909399'
@@ -69,9 +69,9 @@
           "
         >
           <div id="monitorHistory" style="font-size: 14px; text-align: left; position: absolute; top: 16px; line-height: 20px"></div>
-          <div><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="7" id="sellPriceInput"></textarea></div>
+          <div><textarea style="width: 100%;font-size: 14px;vertical-align: top;font-family: Arial;font-weight: 400;" rows="12" id="sellPriceInput"></textarea></div>
           ${ALL_PLANS.map((plan) => {
-      return `
+            return `
                 <div style="margin:10px 0 0">
                   <div style="text-align: left">${plan.slice(-1)}<b id="${plan}TotalBox" style="margin-left: 12px; color: ${INFO_COLOR}"></b><b id="${plan}SuggestList" style="margin-left: 12px"></b></div>
                   <div style="display: flex">
@@ -85,8 +85,8 @@
                   <p style="margin: 0;text-align: left" id="${plan}SellHighResult"></p>
                 </div>
               `
-    }).join('')
-      }
+            }).join('')
+          }
           <p>
             <span id="totalIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="totalIncreaseLabel"><span id="totalDaysBox"></span>日:</span> <b id="totalIncrease">0</b></span>
             <span id="monthIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b></span>
@@ -190,7 +190,7 @@
           return aPlan > bPlan ? 1 : -1
         }
       })
-      const newSellPrices = []
+      const newSellPrices = ['']
       let hasSold = false
       let lastPlan
       for (let x = 0; x < ALL_PLANS.length; x++) {
@@ -201,7 +201,7 @@
       for (let i = 0; i < sellPrices.length; i++) {
         const newItem = checkSellPrice(sellPrices[i], lastPrice)
         const newPlan = newItem.match(/^(#)?(-|_)?([a-zA-Z])?/)[3]
-        if (lastPlan !== newPlan) {
+        if (lastPlan !== newPlan && newSellPrices[newSellPrices.length-1]) {
           newSellPrices.push('')
         }
         newSellPrices.push(newItem)
@@ -227,19 +227,20 @@
   function checkSellPrice(sellPrice, lastPrice) {
     let result = sellPrice
     sellPrice.replace(/^(#)?(-)?([a-zA-Z])?([0-9.]+)\*?([0-9.]+)?(\([0-9.]+\))?(\+?-?[0-9\.]+)?(=?)/, (all, hash, buySign, whatPlan, price, number = 10, buyPartSource, extraMoney = 0, equalSign) => {
-      const plan = `plan${(whatPlan || AUTO_SIGN).toUpperCase()}`
+      const plan = (whatPlan || AUTO_SIGN).toUpperCase()
       const needCount = price && number && (equalSign || lastPrice >= price)
       const _buyPartSource = buyPartSource ? Number(buyPartSource.slice(1, -1)) : buyPartSource
       const sign = buySign ? 0 : 1
-      result = `${hash || ''}${buySign || ''}${plan.slice(-1)}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
+      result = `${hash || ''}${buySign || ''}${plan}${setNumberOfDigits(price)}*${number}${buyPartSource || ''}${extraMoney || ''}`
       if (needCount) {
         const lumpSum = price * number * (1 - sign * FEE_RATE) + Number(extraMoney)
         result += `=${setNumberOfDigits(lumpSum)}`
-        if (!hash) {
+        if (plan && !hash) {
           const _number = buySign === '-' ? _buyPartSource : number
-          totalNumber[plan] += (buySign ? -1 : 1) * _number
-          totalMoney[plan] += (buySign ? -1 : 1) * lumpSum
-          soldRecord[plan] = soldRecord[plan] ? `${soldRecord[plan]}<br/>${result.split('=')[0]}` : result.split('=')[0]
+          const planKey = `plan${plan}`
+          totalNumber[planKey] += (buySign ? -1 : 1) * _number
+          totalMoney[planKey] += (buySign ? -1 : 1) * lumpSum
+          soldRecord[planKey] = soldRecord[planKey] ? `${soldRecord[planKey]}<br/>${result.split('=')[0]}` : result.split('=')[0]
         }
       }
       return 'success'
