@@ -465,7 +465,7 @@
           if (tempMonth !== c.time.slice(0,7)) {
             monthTotalNum = c.buyedInfo.offsetNumber
           } else {
-            monthTotalNum += c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split('+')[1] || 0)
+            monthTotalNum += c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
           }
           if (i && (i === completedRecord.length - 1 || tempMonth !== c.time.slice(0,7))) {
             monthTotalHtml = `
