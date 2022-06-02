@@ -438,7 +438,7 @@
 
   // 生成正负数值html
   function makePositiveOrNegative(number, bigFontSize, smallFontSize, unit) {
-    return number > 0 ? `<b style="color:${SUCCESS_COLOR}"> + ${makeBiggerInteger(setNumberOfDigits(number), bigFontSize, smallFontSize)}</b>` : `<b style="color:${DANGER_COLOR}"> - ${makeBiggerInteger(Math.abs(setNumberOfDigits(number)), bigFontSize, smallFontSize)}${unit||''}</b>`
+    return number >= 0 ? `<b style="color:${SUCCESS_COLOR}"> ${number ? '+' : ''} ${makeBiggerInteger(setNumberOfDigits(number), bigFontSize, smallFontSize)}</b>` : `<b style="color:${DANGER_COLOR}"> - ${makeBiggerInteger(Math.abs(setNumberOfDigits(number)), bigFontSize, smallFontSize)}${unit||''}</b>`
   }
 
   // makeBiggerInteger
@@ -583,7 +583,7 @@
 
   // 根据value生成对应颜色的html
   function setSuccessOrDangerStyleToDom(dom) {
-    dom.setAttribute('style',`color: ${Number(dom.innerText) > 0 ? SUCCESS_COLOR : DANGER_COLOR}`)
+    dom.setAttribute('style',`color: ${Number(dom.innerText) >= 0 ? SUCCESS_COLOR : DANGER_COLOR}`)
   }
 
   // 根据value生成对应颜色的html
