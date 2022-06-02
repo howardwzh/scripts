@@ -463,7 +463,7 @@
       <table id="completedRecordDom" style="border-collapse: collapse;">
         ${completedRecord.map((c, i) => {
           if (tempMonth !== c.time.slice(0,7)) {
-            monthTotalNum = c.buyedInfo.offsetNumber
+            monthTotalNum = c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
           } else {
             monthTotalNum += c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
           }
