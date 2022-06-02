@@ -455,16 +455,38 @@
       month: localStorage.getItem('monthIncrease'),
       today: localStorage.getItem('todayIncrease'),
     }
+    let tempMonth = formatDate(new Date(), "YYYY-MM")
+    let monthTotalNum = 0
+    let monthTotalHtml = ''
     const _html = `<div style="padding-top: 48px">
       <h5 id="recordTitleDom" style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc" data-type="${type}">${makePositiveOrNegative(increaseGroup[type])}</h5>
       <table id="completedRecordDom" style="border-collapse: collapse;">
         ${completedRecord.map((c, i) => {
+          if (tempMonth !== c.time.slice(0,7)) {
+            monthTotalNum = c.buyedInfo.offsetNumber
+          } else {
+            monthTotalNum += c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split('+')[1] || 0)
+          }
+          if (i && (i === completedRecord.length - 1 || tempMonth !== c.time.slice(0,7))) {
+            monthTotalHtml = `
+              <tr>
+                <td colspan="3" style="width:100vw; text-align: center; border: 1px solid #ddd; padding: 7px;font-size:13px">${tempMonth}${makePositiveOrNegative(monthTotalNum)}</td>
+              </tr>
+            `
+          } else {
+            monthTotalHtml = ''
+          }
+          tempMonth = c.time.slice(0,7)
           return (!keyDate || c.time.indexOf(keyDate) === 0) ? (
-            `<tr>
-              <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
-              <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
-              <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color:${DANGER_COLOR};font-weight:normal" data-index="${i}">删除</b></td>
-            </tr>`
+            `
+              ${i !== completedRecord.length - 1 ? monthTotalHtml : ''}
+              <tr>
+                <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.soldText}</td>
+                <td style="width:40vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px">${c.buyedInfo ? makeBuyerText(c.buyedInfo) : c.buyedText}</td>
+                <td style="width:20vw; text-align: left; border: 1px solid #ddd; padding: 7px;font-size:13px" class="date-td">${c.time.slice(2)}<b class="delete-btn" style="display: none; color:${DANGER_COLOR};font-weight:normal" data-index="${i}">删除</b></td>
+              </tr>
+              ${i === completedRecord.length - 1 ? monthTotalHtml : ''}
+            `
           ) : ''
         }).join('')}
       </table>
