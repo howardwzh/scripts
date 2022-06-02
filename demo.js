@@ -47,7 +47,7 @@
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
     // debug
-    debugMsg(localStorage.getItem('completedRecord'))
+    // debugMsg(localStorage.getItem('completedRecord'))
   }, 277);
 
   // 加遮罩面板
@@ -95,7 +95,7 @@
             <span id="monthIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b></span>
             <span id="todayIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b></span>
           </p>
-          <textarea id="debugMsg"></textarea>
+          <textarea id="debugMsg" style="display: none"></textarea>
           <div id="prayerToGod"></div>
           <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left; margin-top: 20px;">备注</div>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
@@ -465,10 +465,14 @@
       <h5 id="recordTitleDom" style="position: fixed;width: 100%;background: #fff;top: 0;margin: 0;padding: 10px 0;left: 0;border-bottom: 2px solid #ccc" data-type="${type}">${makePositiveOrNegative(increaseGroup[type])}</h5>
       <table id="completedRecordDom" style="border-collapse: collapse;">
         ${completedRecord.map((c, i) => {
-          if (tempMonth !== c.time.slice(0,7)) {
-            monthTotalNum = c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
-          } else {
-            monthTotalNum += c.buyedInfo ?  c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
+          if (tempMonth === c.time.slice(0,7)) {
+            if (c.buyedInfo) {
+              monthTotalNum += c.buyedInfo.offsetNumber
+            } else {
+              const matchs = c.buyedText.match(/([-+]) <b [^>]+>([^<]+)/)
+              const value = matchs ? Number(`${matchs[1]}${matchs[2]}`) : 0
+              monthTotalNum += value
+            }
           }
           if (i && (i === completedRecord.length - 1 || tempMonth !== c.time.slice(0,7))) {
             monthTotalHtml = `
@@ -476,6 +480,7 @@
                 <td colspan="3" style="width:100vw; text-align: center; border: 1px solid #ddd; padding: 7px;font-size:13px">${tempMonth}${makePositiveOrNegative(monthTotalNum)}</td>
               </tr>
             `
+            monthTotalNum = c.buyedInfo ? c.buyedInfo.offsetNumber : Number(c.buyedText.split(/[+-]/)[1] || 0)
           } else {
             monthTotalHtml = ''
           }
@@ -668,7 +673,9 @@
 
   // 输出debug信息
   function debugMsg(msg) {
-    document.getElementById('debugMsg').value = msg
+    const debugMsgDom = document.getElementById('debugMsg')
+    debugMsgDom.value = msg
+    debugMsgDom.style.display = "block"
   }
 
   // 开启/关闭 计时器
