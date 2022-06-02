@@ -46,6 +46,8 @@
     addEventToIncrease('totalIncrease', 'saveForever')
     addEventToIncrease('monthIncrease', `${new Date().getMonth()}`)
     addEventToIncrease('todayIncrease', `${new Date().getDate()}`)
+    // debug
+    debugMsg(localStorage.getItem('completedRecord'))
   }, 277);
 
   // 加遮罩面板
@@ -93,6 +95,7 @@
             <span id="monthIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="monthIncreaseLabel">本月:</span> <b id="monthIncrease">0</b></span>
             <span id="todayIncreaseBox" style="user-select: none;display: inline-block; width: 32%"><span id="todayIncreaseLabel">今日:</span> <b id="todayIncrease">0</b></span>
           </p>
+          <textarea id="debugMsg"></textarea>
           <div id="prayerToGod"></div>
           <div id="monitorRemark" style="user-select: none;padding: 0; text-align: left; margin-top: 20px;">备注</div>
           <div id="completeRecordPopup" style="box-sizing: border-box; display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background-color: #fff">
@@ -661,6 +664,11 @@
         countTime(plan, 'destroy')
       }
     })
+  }
+
+  // 输出debug信息
+  function debugMsg(msg) {
+    document.getElementById('debugMsg').value = msg
   }
 
   // 开启/关闭 计时器
